@@ -14,4 +14,9 @@ function SingularPluralHelper( dataLength, singularForm, pluralForm, reverse = t
     return `${dataLength} ${textToDisplay}`
 }
 
-export default SingularPluralHelper;
+function SingularPluralHelperTextOnly(dataLength, singularForm, pluralForm) {
+    let textToDisplay = (dataLength > 1) ? pluralForm : singularForm
+    return textToDisplay
+}
+
+export { SingularPluralHelper, SingularPluralHelperTextOnly };

@@ -39,9 +39,9 @@ class PostController extends Controller
             'uuid' => Str::uuid()->toString(),
             'post_body' => $validatedData['post_body'],
             'excerpt' => Str::limit($validatedData['post_body'], 250, '....'),
-        ];
-        $post = Post::create($dataToInsert);
-        // $request->user()->posts()->create($dataToInsert);
+        ]; 
+        $post = Post::make($dataToInsert);
+        $request->user()->posts()->save($post);
         
         // Handling Multiple File Upload
         if ($request->hasFile('post_images')) {
@@ -134,9 +134,7 @@ class PostController extends Controller
     {
         $post = $this->postService->getThePostInstanceFrom($uuid);
         $this->authorize('delete', $post);
-        //Deleting related comments
         $post->comments()->delete();
-        //Delete the post
         $post->delete();
         return redirect()->route('user.timeline');
     }

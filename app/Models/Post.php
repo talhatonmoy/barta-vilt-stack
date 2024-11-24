@@ -21,12 +21,17 @@ class Post extends Model implements HasMedia
 
     // Relationship with user
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->with('media');
     }
 
     // Relationship with comments
     public function comments(){
         return $this->hasMany(Comment::class);
     }
+
+    //
+    // public function postMedia(){
+    //     return $this->morphMany($this->getMediaModel(), 'model');
+    // }
 
 }

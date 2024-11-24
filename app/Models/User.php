@@ -59,7 +59,7 @@ class User extends Authenticatable implements HasMedia
     
     // Relation with posts table
     public function posts(){
-        return $this->hasMany(Post::class);
+        return $this->hasMany(Post::class)->with(['media', 'user']);
     }
 
     // Relation with comments table

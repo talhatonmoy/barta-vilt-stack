@@ -32,7 +32,8 @@ const menu = reactive({
                         class="hidden lg:block w-64 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-md">
                         <Link :href="route('user.profile.edit')">
                         <li for="basic_info"
-                            class="w-full px-4 py-2 border-b cursor-pointer hover:bg-gray-50 border-gray-200 rounded-t-lg">
+                         :class="{ 'border-l-neutral-900 border-l-8': $page.url == route('user.profile.edit') }"
+                            class=" transition w-full px-4 py-2 border-b cursor-pointer hover:bg-gray-50 border-gray-200 rounded-t-md">
                             Basic Info
                         </li>
                         </Link>

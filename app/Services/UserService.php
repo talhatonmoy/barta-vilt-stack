@@ -28,14 +28,20 @@ class UserService{
      * Providing authenticated user data
      * Ready for vue component
      */
-    public function getAuthenticatedUserData(){
-        if(auth()->id()){
-            $userData = User::find(auth()->id());
+    public function getAuthenticatedUserData()
+    {
+        if (auth()->id()) {
+            $userData = User::withCount('comments', 'posts')
+                ->find(auth()->id());
+
             $userData['profileImgUrl'] = $userData->getFirstMediaUrl(MediaCollection::UserProfileImage);
+            // Unset the 'media' relationship to exclude it entirely
+            unset($userData->media);
             return $userData;
         }
         return null;
     }
+
 
     /**
      * Providing post collection by username along with user data, 
@@ -45,7 +51,7 @@ class UserService{
      */
     public function getPostCollectionFrom($user_name){
         $data = [];
-        $posts = Post::with(['user.media', 'media']) //Eager Loading
+        $posts = Post::with(['media', 'user']) //Eager Loading
             ->whereHas('user', function ($query) use ($user_name) {
                 $query->where('user_name', $user_name);
             })

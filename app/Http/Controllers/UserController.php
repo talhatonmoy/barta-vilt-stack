@@ -11,14 +11,17 @@ use App\Helpers\MediaCollection;
 use App\Helpers\ReusableHelpers;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Services\PostCardComponentService;
 
 class UserController extends Controller
 {
-    public $userService;
-    public function __construct(UserService $userService)
+    public $userService, $postCardComponentService;
+    public function __construct(UserService $userService, PostCardComponentService $postCardComponentService)
     {
         $this->userService = $userService;
+        $this->postCardComponentService = $postCardComponentService;
     }
+
     // Create
     public function userCreate(){
         return Inertia::render('User/UserRegistration');
@@ -26,7 +29,6 @@ class UserController extends Controller
 
     // Store
     public function userStore(UserStoreRequest $request){
-        //-Check Authorization
         $this->userService->store($request);
         return redirect()->route('user.timeline');
     }

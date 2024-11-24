@@ -16,7 +16,7 @@ class PostCardComponentService{
     public function getLatestPostCollectionFromAllUsers()
     {
         $data = [];
-        $posts = Post::with('user')
+        $posts = Post::with(['media', 'user'])
         ->withCount('comments')
         ->orderByDesc('created_at')->paginate(10);
 
@@ -30,7 +30,6 @@ class PostCardComponentService{
 
     /**
      * Formatting collection data ready to share in a Vue component.
-     * 
      * For User Profile Page
      */
     protected function prepareCollectionDataToShare($postCollection)

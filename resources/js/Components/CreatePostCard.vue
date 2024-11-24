@@ -99,6 +99,7 @@ function removePreviewImage(index) {
                 </div>
             </div>
             <InputError :field="form.errors.post_body" />
+            <!-- <InputError :field="form.errors.post_images" /> -->
         </div>
 
         <div>

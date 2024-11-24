@@ -3,11 +3,14 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import UserLayout from '../../Layouts/UserLayout.vue';
 import CreatePostCard from '../../Components/CreatePostCard.vue';
 import PostCard from '../../Components/PostCard.vue';
+import { SingularPluralHelperTextOnly } from '../../Helpers/SingularPluralHelper';
 import { ref } from 'vue';
 
-const user = usePage().props.auth.user
-const userPosts = ref(usePage().props.userPosts);
-const nextPageUrl = ref(usePage().props.nextPageUrl);
+const props = usePage().props;
+
+const user = props.auth.user
+const userPosts = ref(props.userPosts);
+const nextPageUrl = ref(props.nextPageUrl);
 
 //Load More Posts
 function loadMorePosts() {
@@ -26,9 +29,6 @@ function loadMorePosts() {
 </script>
 
 <template>
-    <!-- <pre>
-        {{ userPosts }}
-    </pre> -->
     <UserLayout>
         <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 min-h-screen">
             <!-- Cover Container -->
@@ -39,15 +39,15 @@ function loadMorePosts() {
                     <!-- Avatar -->
                     <div class="relative">
                         <img class="w-32 h-32 rounded-full border-2 border-gray-800"
-                            src="https://avatars.githubusercontent.com/u/831997" alt="Ahmed Shamim" />
+                            :src="user.profileImgUrl" :alt="user.first_name" />
                         <!--            <span class="bottom-2 right-4 absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>-->
                     </div>
                     <!-- /Avatar -->
 
                     <!-- User Meta -->
                     <div>
-                        <h1 class="font-bold md:text-2xl">Ahmed Shamim Hasan Shaon</h1>
-                        <p class="text-gray-700">Less Talk, More Code 💻</p>
+                        <h1 class="font-bold md:text-2xl">{{ user.first_name }} {{ user.last_name }}</h1>
+                        <p class="text-gray-700">{{ user.bio }}</p>
                     </div>
                     <!-- / User Meta -->
                 </div>
@@ -57,14 +57,14 @@ function loadMorePosts() {
                 <div class="flex flex-row gap-16 justify-center text-center items-center">
                     <!-- Total Posts Count -->
                     <div class="flex flex-col justify-center items-center">
-                        <h4 class="sm:text-xl font-bold">3</h4>
-                        <p class="text-gray-600">Posts</p>
+                        <h4 class="sm:text-xl font-bold">{{ user.posts_count }}</h4>
+                        <p class="text-gray-600">{{ SingularPluralHelperTextOnly(user.posts_count, 'Post', 'Posts') }}</p>
                     </div>
 
                     <!-- Total Comments Count -->
                     <div class="flex flex-col justify-center items-center">
-                        <h4 class="sm:text-xl font-bold">14</h4>
-                        <p class="text-gray-600">Comments</p>
+                        <h4 class="sm:text-xl font-bold">{{ user.comments_count }}</h4>
+                        <p class="text-gray-600">{{ SingularPluralHelperTextOnly(user.comments_count, 'Comment', 'Comments') }}</p>
                     </div>
                 </div>
                 <!-- /Profile Stats -->

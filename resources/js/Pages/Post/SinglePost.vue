@@ -4,7 +4,7 @@ import UserLayout from '../../Layouts/UserLayout.vue';
 import { usePage, Link, router } from '@inertiajs/vue3';
 import CommentForm from '../../Components/CommentForm.vue';
 import CommentsListCard from '../../Components/CommentsListCard.vue';
-import SingularPluralHelper from '../../Helpers/SingularPluralHelper';
+import { SingularPluralHelper } from '../../Helpers/SingularPluralHelper';
 
 
 const { postDetail, can, allComments } = usePage().props
