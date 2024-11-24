@@ -5,7 +5,7 @@ use App\Models\Post;
 use Illuminate\Support\Str;
 use App\Helpers\MediaCollection;
 use App\Helpers\ReusableHelpers;
-
+use App\Http\Resources\PostResource;
 
 class PostCardComponentService{
 
@@ -17,6 +17,7 @@ class PostCardComponentService{
     {
         $data = [];
         $posts = Post::with('user')
+        ->withCount('comments')
         ->orderByDesc('created_at')->paginate(10);
 
         $Posts = $this->prepareCollectionDataToShare($posts);
@@ -40,6 +41,7 @@ class PostCardComponentService{
                 'excerpt' => $post->excerpt,
                 'last_modified_time' => ReusableHelpers::getLastModifiedTime($post->created_at, $post->updated_at),
                 'remainingPostImages' => $post->getMedia(MediaCollection::PostImage)->count() - 4,
+                'comments_count' => $post->comments_count,
                 'postImages' => $post->getMedia(MediaCollection::PostImage)->take(4)->map(function ($eachMedia) {
                     return [
                         'file_name' => $eachMedia->file_name,

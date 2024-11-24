@@ -23,4 +23,10 @@ class Post extends Model implements HasMedia
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    // Relationship with comments
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
 }

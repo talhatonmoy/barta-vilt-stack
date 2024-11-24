@@ -52,9 +52,20 @@ class User extends Authenticatable implements HasMedia
         'password' => 'hashed',
     ];
 
+    // Relation with user_details table
+    public function user_details(){
+        return $this->hasOne(UserDetail::class)->latest();
+    }
+    
     // Relation with posts table
     public function posts(){
         return $this->hasMany(Post::class);
+    }
+
+    // Relation with comments table
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     // Defining to hold single file

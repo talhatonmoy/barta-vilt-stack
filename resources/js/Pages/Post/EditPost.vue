@@ -15,7 +15,8 @@ function handleNewImageUpload(event) {
     const newFiles = event.target.files
     if (newFiles) {
         const newFilesArray = Array.from(newFiles)
-        form.new_images_to_add.push(...newFilesArray);
+        form.new_images_to_add.push(...newFilesArray)
+        // form.new_images_to_add = newFilesArray
 
         // Making url and push to preview array
         const newFileUrls = newFilesArray.map(image => URL.createObjectURL(image))
@@ -62,24 +63,20 @@ function handleRemoveExistingImages(index) {
 
 const form = useForm({
     post_body: postDetail.post_body,
+    remove_image_ids_from_post: [], // Sending Ids
     new_images_to_add: [], // Sending as uploaded file object
-    remove_image_ids_from_post: [] // Sending Ids
 })
 
 function handleSubmit() {
-    console.log(form)
-    form.submit('put', route('posts.update', postDetail.uuid), {
-        onError: (errors) => {
-            console.error("Submission errors:", errors);
-        }
-    });
+    // form.submit('put', route('posts.update', postDetail.uuid));
+    form.put(route('posts.update', postDetail.uuid))
 }
 
 </script>
 
 <template>
     <UserLayout>
-        <form @submit.prevent="handleSubmit"
+        <form @submit.prevent="handleSubmit" enctype="multipart/form-data"
             class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6 space-y-3">
             <!-- Create Post Card Top -->
             <div>

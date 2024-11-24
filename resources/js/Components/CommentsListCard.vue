@@ -1,8 +1,53 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3';
-import UserLayout from '../Layouts/UserLayout.vue';
+import { Link, router } from '@inertiajs/vue3';
+import { provide, reactive, ref } from 'vue';
+import EditCommentForm from './EditCommentForm.vue';
 
-const {validatedData} = usePage().props
+const props = defineProps({
+    commentData: {
+        type: Object,
+        Required: true
+    }
+})
+
+const commentData = props.commentData;
+
+const menu = reactive({
+    open: false,
+    handleChange() {
+        menu.open = !menu.open
+    },
+    reset() {
+        menu.open = false
+    }
+})
+
+
+// CommentState
+const CommentMoodStore = reactive({
+    editing: false,
+    handleEditButton() {
+        CommentMoodStore.editing = true
+    },
+    reset() {
+        CommentMoodStore.editing = false
+    }
+})
+provide('CommentMoodStore', CommentMoodStore)
+
+
+// Sending Delete Request
+function handlePostDelete() {
+    router.visit(route('comments.destroy', commentData.uuid), {
+        method: 'delete',
+        preserveScroll: true,
+        onBefore: visit => {
+            return confirm("Are You Really Want To Delete This Comment?")
+        }
+    })
+}
+
+
 
 
 </script>
@@ -34,7 +79,7 @@ const {validatedData} = usePage().props
                 </div>
 
                 <!-- Card Action Dropdown -->
-                <div class="flex flex-shrink-0 self-center">
+                <div v-if="commentData.can.update && commentData.can.delete"  class="flex flex-shrink-0 self-center" >
                     <div class="relative inline-block text-left">
                         <div>
                             <button @click="menu.handleChange" type="button" v-click-away="menu.reset"
@@ -76,6 +121,8 @@ const {validatedData} = usePage().props
             <span class="">{{ commentData.last_modified_time }}</span>
         </div>
     </div>
+
+
 </template>
 
 <style scoped>

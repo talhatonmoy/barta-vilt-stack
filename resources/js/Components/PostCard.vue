@@ -1,7 +1,10 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import { reactive } from 'vue';
+import SingularPluralHelper from '../Helpers/SingularPluralHelper';
 const props = defineProps(['post'])
+
+const user = usePage().props.auth.user
 
 const menu = reactive({
     open: false,
@@ -17,6 +20,7 @@ const menu = reactive({
 function handlePostDelete() {
     router.visit(route('posts.destroy', props.post.uuid), {
         method: 'delete',
+        preserveScroll: true,
         onBefore: visit => {
             return confirm("Are You Really Want To Delete This Post?")
         }
@@ -25,9 +29,6 @@ function handlePostDelete() {
 </script>
 
 <template>
-    <!-- <pre>
-     {{ props.post }}
-   </pre> -->
     <article class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6">
         <!-- Barta Card Top -->
         <header>
@@ -58,7 +59,7 @@ function handlePostDelete() {
                 </div>
 
                 <!-- Card Action Dropdown -->
-                <div class="flex flex-shrink-0 self-center">
+                <div v-if="props.post.user.user_name == user.user_name"  class="flex flex-shrink-0 self-center">
                     <div class="relative inline-block text-left">
                         <div>
                             <button @click="menu.handleChange" v-click-away="menu.reset" type="button"
@@ -93,27 +94,25 @@ function handlePostDelete() {
             </div>
         </header>
 
-
-        <!-- Post Excerpt -->
-        <div class="py-4 text-gray-700 font-normal whitespace-pre-wrap">
-            {{ props.post.excerpt }}
-        </div>
-
         <Link :href="route('posts.show', props.post.uuid)">
-        <!-- Displaying Post Images -->
-        <div v-if="props.post.postImages" class="mt-1 mb-6 grid gap-1"
-            :class="(props.post.postImages.length > 1) ? 'grid-cols-2' : 'grid-cols-1'">
-            <div v-for="(postImage, index) in props.post.postImages" :key="index" class="relative">
-                <img :src="postImage.url" :alt="postImage.file_name" class="rounded-md">
-                <!-- Show More -->
-                <div v-if="index == 3 && props.post.remainingPostImages > 0"
-                    class="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white rounded-md cursor-pointer">
-                    {{ (props.post.remainingPostImages == 1) ? '1 More' : `${props.post.remainingPostImages}+ More` }}
-                </div>
+            <!-- Post Excerpt -->
+            <div class="py-4 text-gray-700 font-normal whitespace-pre-wrap">
+                {{ props.post.excerpt }}
             </div>
 
-        </div>
+            <!-- Displaying Post Images -->
+            <div v-if="props.post.postImages" class="mt-1 mb-6 grid gap-1"
+                :class="(props.post.postImages.length > 1) ? 'grid-cols-2' : 'grid-cols-1'">
+                <div v-for="(postImage, index) in props.post.postImages" :key="index" class="relative">
+                    <img :src="postImage.url" :alt="postImage.file_name" class="rounded-md">
+                    <!-- Show More -->
+                    <div v-if="index == 3 && props.post.remainingPostImages > 0"
+                        class="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center text-white rounded-md cursor-pointer">
+                        {{ (props.post.remainingPostImages == 1) ? '1 More' : `${props.post.remainingPostImages}+ More` }}
+                    </div>
+                </div>
 
+            </div>
         </Link>
 
         <!-- Date Created & View Stat -->
@@ -129,7 +128,7 @@ function handlePostDelete() {
             <div class="flex items-center justify-between">
                 <div class="flex gap-8 text-gray-600">
                     <!-- Comment Button -->
-                    <button type="button"
+                    <Link :href="route('posts.show', props.post.uuid)" 
                         class="-m-2 flex gap-2 text-xs items-center rounded-full p-2 text-gray-600 hover:text-gray-800">
                         <span class="sr-only">Comment</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -138,8 +137,8 @@ function handlePostDelete() {
                                 d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
                         </svg>
 
-                        <p>3</p>
-                    </button>
+                        <p>{{ props.post.comments_count }}</p>
+                    </Link>
                     <!-- /Comment Button -->
                 </div>
             </div>

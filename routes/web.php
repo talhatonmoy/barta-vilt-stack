@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\BartaMediaController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserDetailController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -50,8 +52,21 @@ Route::middleware('auth')->group(function(){
     // Handle User Profile Update
     Route::post('/user/profile/edit', [UserController::class, 'userProfileUpdate'])->name('user.profile.update');
     
+    // User Detail Store
+    Route::post('user/profile/detail', [UserDetailController::class, 'userDetailStore'])->name('user.detail.store');
+    
+    // User Detail Edit
+    Route::get('user/profile/detail', [UserDetailController::class, 'userDetailEdit'])->name('user.detail.edit');
+
+    // Handle User Detail update
+    Route::patch('user/profile/detail', [UserDetailController::class, 'userDetailUpdate'])->name('user.detail.update');
+
+
     // Post Routes
-    Route::resource('posts', PostController::class);
+    Route::resource('posts', PostController::class)->except(['index', 'create']);
+
+    // Comments
+    Route::resource('comments', CommentController::class);
 
     // Spatie's Media Delete Route
     Route::delete('media/{id}', [BartaMediaController::class, 'destroy'])->name('media.delete');

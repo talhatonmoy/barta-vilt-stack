@@ -2,7 +2,7 @@
 
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { reactive, ref, onBeforeMount } from 'vue';
-import UserLayout from '../../Layouts/UserLayout.vue';
+import UserLayoutWithSidebar from '../../Layouts/UserLayoutWithSidebar.vue';
 
 const { userData } = reactive(usePage().props);
 const previewProfileImg = ref('/img/placeholders/profile.jpg')
@@ -32,11 +32,17 @@ function handleChange(event) {
         previewProfileImg.value = URL.createObjectURL(file);
     }
 }
+
+
+
+
+
+const openIndex = ref(1);
 </script>
 
 <template>
-    <UserLayout>
-        <main class="container max-w-xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen">
+    <UserLayoutWithSidebar>
+        <main v-if="openIndex == 1" class="container max-w-4xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen ">
             <!-- Profile Edit Form -->
 
             <form @submit.prevent="handleSubmit">
@@ -55,8 +61,7 @@ function handleChange(event) {
                                 <label for="photo"
                                     class="block text-sm font-medium leading-6 text-gray-900">Photo</label>
                                 <div class="mt-2 flex items-center gap-x-3">
-                                    <input class="hidden" @change="handleChange" type="file" 
-                                        id="avatar" />
+                                    <input class="hidden" @change="handleChange" type="file" id="avatar" />
                                     <img class="h-32 w-32 rounded-full" :src="previewProfileImg"
                                         alt="Ahmed Shamim Hasan Shaon" />
                                     <label for="avatar">
@@ -167,7 +172,8 @@ Less Talk, More Code 💻</textarea>
                 </div>
 
                 <div class="mt-6 flex items-center justify-end gap-x-6">
-                    <Link :href="route('user.profile.show', userData.user_name)" class="text-sm font-semibold leading-6 text-gray-900">
+                    <Link :href="route('user.profile.show', userData.user_name)"
+                        class="text-sm font-semibold leading-6 text-gray-900">
                     Cancel
                     </Link>
                     <button type="submit"
@@ -178,7 +184,7 @@ Less Talk, More Code 💻</textarea>
             </form>
             <!-- /Profile Edit Form -->
         </main>
-    </UserLayout>
+    </UserLayoutWithSidebar>
 </template>
 
 <style scoped>

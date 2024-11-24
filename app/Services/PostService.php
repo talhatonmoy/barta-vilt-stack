@@ -14,12 +14,18 @@ class PostService{
      * with related user data for the Vue component.
      */
     public function getPostDetailWithRelatedUserDataFrom(string $uuid){
-        $post = Post::with(['user', 'media'])
-            ->select('uuid', 'user_id', 'post_body', 'created_at', 'updated_at', 'id')
+        $post = Post::with('user')->withCount('comments')
             ->where('uuid', $uuid)
             ->firstOrFail();
         $postDetail = $this->prepareSinglePostDataToShare($post);
         return $postDetail;
+    }
+
+    /**
+     * Providing post instance from post uuid
+     */
+    public function getThePostInstanceFrom($uuid){
+        return Post::where('uuid', $uuid)->firstOrFail();
     }
 
     /**
@@ -30,7 +36,7 @@ class PostService{
         $postDetail = [
             'uuid' => $post->uuid,
             'post_body' => $post->post_body,
-            'last_modified_time' => ReusableHelpers::getLastModifiedTime($post->created_at, $post->updated_at),
+            'comments_count' => $post->comments_count,
             'last_modified_time' => ReusableHelpers::getLastModifiedTime($post->created_at, $post->updated_at),
             'postImages' => $post->getMedia(MediaCollection::PostImage)->map(function($eachMedia){
                 return [
