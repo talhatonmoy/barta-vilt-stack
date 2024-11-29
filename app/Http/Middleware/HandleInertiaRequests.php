@@ -2,9 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Services\UserService;
-use Illuminate\Http\Request;
+use App\Helpers\MediaCollection;
+use App\Models\User;
 use Inertia\Middleware;
+use Illuminate\Http\Request;
+use App\Services\UserService;
+use App\Http\Resources\UserResource;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -38,9 +41,9 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             // Sharing Authenticated User Data globally
-            'auth.user' => function () {
-                $user = new UserService();
-                return $user->getAuthenticatedUserData();
+            'auth.user' => function () use ($request) {
+                $data =  new UserService();
+                return $data->getAuthenticatedUserData();
             },
         ]);
     }

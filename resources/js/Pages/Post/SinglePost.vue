@@ -5,9 +5,10 @@ import { usePage, Link, router } from '@inertiajs/vue3';
 import CommentForm from '../../Components/CommentForm.vue';
 import CommentsListCard from '../../Components/CommentsListCard.vue';
 import { SingularPluralHelper } from '../../Helpers/SingularPluralHelper';
+import Like from '../../Components/Like/Like.vue';
 
 
-const { postDetail, can, allComments } = usePage().props
+const { postDetail, can } = usePage().props
 
 // Menu State
 const menu = reactive({
@@ -39,7 +40,7 @@ function handlePostDelete() {
 <template>
     <UserLayout>
         <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen">
-            <section id="newsfeed" class="space-y-6">
+            <section class="space-y-6">
                 <!-- Barta Card -->
                 <article class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6">
                     <!-- Barta Card Top -->
@@ -113,8 +114,8 @@ function handlePostDelete() {
                     </div>
 
                     <!-- Post Image -->
-                    <div v-if="postDetail.postImages.length" class="mt-2 mb-6 space-y-4">
-                        <img v-for="(img, index) in postDetail.postImages" :key="index" :src="img.url"
+                    <div v-if="postDetail.media" class="mt-2 mb-6 space-y-4">
+                        <img v-for="img in postDetail.media" :key="img.id" :src="img.original_url"
                             :alt="img.file_name" class="rounded-md">
                     </div>
 
@@ -126,8 +127,17 @@ function handlePostDelete() {
                         </span>
 
                         <span class="">•</span>
-                        <span>{{ SingularPluralHelper(postDetail.comments_count, 'Comment', 'Comments') }}</span>
+
+                        <span>
+                            <Like :modelData="postDetail" likeActionRouteName="posts.like" />
+                        </span>
+
                         <span class="">•</span>
+
+                        <span>{{ SingularPluralHelper(postDetail.comments_count, 'Comment', 'Comments') }}</span>
+                        
+                        <span class="">•</span>
+
                         <span>450 views</span>
                     </div>
 
@@ -145,14 +155,14 @@ function handlePostDelete() {
 
                 <div class="flex flex-col space-y-6">
                     <h1 class="text-lg font-semibold">
-                        {{ SingularPluralHelper(allComments.length, 'Comment', 'Comments', false) }}
+                        {{ SingularPluralHelper(postDetail.comments_count, 'Comment', 'Comments', false) }}
                     </h1>
 
                     <!-- Barta User Comments Container -->
-                    <article v-if="allComments.length>0"
+                    <article v-if="postDetail.comments_count >0"
                         class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-2 sm:px-6 min-w-full divide-y">
                         <!-- Comment  -->
-                        <div v-for="(comment, index) in allComments" :key="index">
+                        <div v-for="(comment, index) in postDetail.comments" :key="index">
                             <CommentsListCard :commentData="comment" />
                         </div>
                         <!-- /Comment  -->

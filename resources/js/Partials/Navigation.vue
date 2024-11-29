@@ -18,7 +18,7 @@ const menu = reactive({
 </script>
 
 <template>
-    <nav class="bg-white shadow ">
+    <nav class="bg-white shadow">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 justify-between">
                 <div class="flex">
@@ -32,7 +32,7 @@ const menu = reactive({
                             <Link :href="route('user.timeline')"
                                 :class="{'border-b-2' : $page.url === '/timeline'}"
                                 class="inline-flex items-center  border-gray-800 px-1 pt-1 text-sm font-semibold text-gray-900">
-                                Home</Link>
+                                Timeline</Link>
                             <a href="#"
                                 class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600 hover:border-gray-300 hover:text-gray-800">For
                                 you</a>

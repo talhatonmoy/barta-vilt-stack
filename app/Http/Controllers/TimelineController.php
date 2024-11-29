@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ReusableHelpers;
-use App\Services\PostCardComponentService;
-use App\Services\PostService;
-use App\Services\TimelineService;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Services\TimelineService;
+use App\Http\Resources\Post\PostResource;
+use App\Services\PostCardComponentService;
 
 class TimelineController extends Controller
 {
@@ -22,11 +20,11 @@ class TimelineController extends Controller
     }
 
 
-    public function timelinePage(){
+public function timelinePage(){
         $postData = $this->postCardComponentService->getLatestPostCollectionFromAllUsers();
         return Inertia::render('User/TimeLine', [
-            'timelinePosts' => $postData['posts'],
-            'nextPageUrl' => $postData['nextPageUrl'],
+            'timelinePostsData' => PostResource::collection($postData)
         ]);
     }
+
 }

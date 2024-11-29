@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\MediaCollection;
+use App\Http\Resources\Post\PostResourceForUserProfilePage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,12 +16,22 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this->resource);
         return [
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'user_name' => $this->user_name,
             'bio' => $this->bio,
-            'profileImgUrl' => $this->getFirstMediaUrl(MediaCollection::UserProfileImage)
+            'profileImgUrl' => $this->getFirstMediaUrl(MediaCollection::UserProfileImage),
+
+            // Comments Count
+            'comments_count' => $this->whenCounted('comments'),
+            
+            // Likes Count
+            'posts_count' => $this->whenCounted('posts'),
+
+            // Related Models
+            'posts' => PostResourceForUserProfilePage::collection($this->whenLoaded('posts')),
         ];
     }
 }

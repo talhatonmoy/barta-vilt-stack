@@ -4,18 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Inertia\Inertia;
-use App\Models\Comment;
-use App\Models\Comments;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\PostService;
 use App\Helpers\MediaCollection;
-use App\Helpers\ReusableHelpers;
-use Illuminate\Support\Facades\Log;
-use App\Http\Requests\PostStoreRequest;
-use App\Http\Requests\PostUpdateRequest;
-use App\Http\Resources\CommentResource;
 use App\Services\CommentService;
+use App\Http\Requests\PostStoreRequest;
+use App\Http\Resources\Post\PostResource;
 
 class PostController extends Controller
 {
@@ -56,20 +51,16 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $uuid)
+    public function show(Post $post)
     {
-        $postInstance = $this->postService->getThePostInstanceFrom($uuid);
-        $this->authorize('viewAny', $postInstance);
-
-        $postDetail = $this->postService->getPostDetailWithRelatedUserDataFrom($uuid);
-        $comments  = $this->commentService->getCommentsOfThisPostWithUserDataFrom($uuid);
+        $this->authorize('viewAny', $post);
+        $postDetail = $this->postService->getPostDetailWithAllData($post);
         
         return Inertia::render('Post/SinglePost', [
-            'postDetail' => $postDetail,
-            'allComments' => CommentResource::collection($comments),
+            'postDetail' => PostResource::make($postDetail),
             'can' => [
-                'update_post' => request()->user()->can('update', $postInstance),
-                'delete_post' => request()->user()->can('delete', $postInstance),
+                'update_post' => request()->user()->can('update', $post),
+                'delete_post' => request()->user()->can('delete', $post),
             ]
         ]);
     }

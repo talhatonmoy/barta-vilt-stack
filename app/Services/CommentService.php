@@ -27,6 +27,6 @@ class CommentService{
      * Providing Comment Collections For a Single Post
      */
     public function getCommentsOfThisPostWithUserDataFrom($post_uuid){
-        return Comment::with('user')->where('post_uuid', $post_uuid)->get();
+        return Comment::with('user.media')->where('post_uuid', $post_uuid)->get();
     }
 }

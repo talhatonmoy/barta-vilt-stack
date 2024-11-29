@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\Auth\UserAuthController;
-use App\Http\Controllers\BartaMediaController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\TimelineController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserDetailController;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostLikeController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TimelineController;
+use App\Http\Controllers\BartaMediaController;
+use App\Http\Controllers\UserDetailController;
+use App\Http\Controllers\Auth\UserAuthController;
 
 /**
  * Open routes
@@ -46,7 +47,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/timeline', [TimelineController::class, 'timelinePage'])->name('user.timeline');
     
     // User Profile 
-    Route::get('/user/{user_name}', [UserController::class, 'userProfileShow'])->name('user.profile.show');
+    Route::get('/user/{user:user_name}', [UserController::class, 'userProfileShow'])->name('user.profile.show');
     // Edit Profile 
     Route::get('/user/profile/edit', [UserController::class, 'userProfileEdit'])->name('user.profile.edit');
     // Handle User Profile Update
@@ -64,6 +65,14 @@ Route::middleware('auth')->group(function(){
 
     // Post Routes
     Route::resource('posts', PostController::class)->except(['index', 'create']);
+    // Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+    // Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+    // Route::post('posts/{post:uuid}', [PostController::class, 'store'])->name('posts.store');
+
+    //Likes
+    Route::post('/posts/{post:uuid}/like', [PostLikeController::class, 'toggleLike'])->name('posts.like');
+    // Route::post('/posts/{post:uuid}/dislike', [PostLikeController::class, 'toggleDislike'])->name('posts.dislike');
+
 
     // Comments
     Route::resource('comments', CommentController::class);

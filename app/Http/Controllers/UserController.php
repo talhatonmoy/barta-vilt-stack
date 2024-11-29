@@ -11,6 +11,8 @@ use App\Helpers\MediaCollection;
 use App\Helpers\ReusableHelpers;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\Post\PostResourceForUserProfilePage;
+use App\Http\Resources\UserResource;
 use App\Services\PostCardComponentService;
 
 class UserController extends Controller
@@ -34,11 +36,14 @@ class UserController extends Controller
     }
 
     //Show 
-    public function userProfileShow($user_name){
-        $userPostsData = $this->userService->getPostCollectionFrom($user_name);
+    public function userProfileShow(User $user){
+
+        $userPosts = $user->posts()->paginate(10);
+        $user->loadCount('comments', 'posts');
+
         return Inertia::render('User/UserProfile', [
-            'userPosts' => $userPostsData['posts'],
-            'nextPageUrl' => $userPostsData['nextPageUrl'],
+            'userData' => UserResource::make($user),
+            'userPosts' => PostResourceForUserProfilePage::collection($userPosts),
         ]);
     }
 

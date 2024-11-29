@@ -9,7 +9,7 @@ import Navigation from '../Partials/Navigation.vue';
 <template>
 
     <body class="bg-gray-100">
-        <header>
+        <header >
             <!-- Navigation -->
             <Navigation />
         </header>
@@ -20,8 +20,8 @@ import Navigation from '../Partials/Navigation.vue';
             </slot>
         </div>
 
-            <!-- Footer -->
-            <Footer />
+        <!-- Footer -->
+        <Footer />
     </body>
 
 </template>

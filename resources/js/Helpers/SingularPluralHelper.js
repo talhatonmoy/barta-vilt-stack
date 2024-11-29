@@ -6,7 +6,8 @@
  * @param {boolean} [reverse=true] - Whether to reverse the output format.
  * @returns {string} - The formatted string based on data length.
  */
-function SingularPluralHelper( dataLength, singularForm, pluralForm, reverse = true) {
+function SingularPluralHelper(dataLength, singularForm, pluralForm, reverse = true) {
+    dataLength = (dataLength) ? dataLength : 0
     let textToDisplay = (dataLength > 1) ? pluralForm : singularForm
     if (!reverse) {
         return `${textToDisplay} (${dataLength})`

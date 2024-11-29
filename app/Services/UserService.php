@@ -49,8 +49,9 @@ class UserService{
      * 
      * For User Profile Page
      */
-    public function getPostCollectionFrom($user_name){
+    public function getPostCollectionFrom(object $user){
         $data = [];
+        // $user->posts
         $posts = Post::with(['media', 'user']) //Eager Loading
             ->whereHas('user', function ($query) use ($user_name) {
                 $query->where('user_name', $user_name);
