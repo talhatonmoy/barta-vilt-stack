@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive } from 'vue'
+import {reactive } from 'vue'
 import { usePage, Link } from '@inertiajs/vue3';
 import SearchBar from '../Components/SearchBar.vue';
 const page = usePage();

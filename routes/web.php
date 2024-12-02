@@ -65,14 +65,9 @@ Route::middleware('auth')->group(function(){
 
     // Post Routes
     Route::resource('posts', PostController::class)->except(['index', 'create']);
-    // Route::post('posts', [PostController::class, 'store'])->name('posts.store');
-    // Route::post('posts', [PostController::class, 'store'])->name('posts.store');
-    // Route::post('posts/{post:uuid}', [PostController::class, 'store'])->name('posts.store');
 
-    //Likes
+    //Post Likes
     Route::post('/posts/{post:uuid}/like', [PostLikeController::class, 'toggleLike'])->name('posts.like');
-    // Route::post('/posts/{post:uuid}/dislike', [PostLikeController::class, 'toggleDislike'])->name('posts.dislike');
-
 
     // Comments
     Route::resource('comments', CommentController::class);
