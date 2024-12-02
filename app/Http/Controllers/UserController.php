@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewUserRegistered;
 use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
@@ -31,8 +32,13 @@ class UserController extends Controller
 
     // Store
     public function userStore(UserStoreRequest $request){
-        $this->userService->store($request);
+        $user = $this->userService->store($request);
+
+        event(new NewUserRegistered($user));
+        
         return redirect()->route('user.timeline');
+
+
     }
 
     //Show 
