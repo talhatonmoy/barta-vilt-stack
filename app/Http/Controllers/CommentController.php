@@ -7,7 +7,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
+use App\Notifications\Post\NewComment;
 use App\Services\CommentService;
+use Illuminate\Support\Facades\Notification;
 
 class CommentController extends Controller
 {
@@ -39,7 +41,14 @@ class CommentController extends Controller
     {
         $this->authorize('create', Comment::class);
         $validatedData = $request->validated();
-        $this->commentService->storeComment($validatedData);
+        $comment = $this->commentService->storeComment($validatedData);
+
+        // Notify Post Author
+        $comment->load('post.user');
+        if($comment->post->user_id != auth()->id()){
+            Notification::send($comment->post->user, new NewComment($comment));
+        }
+
         return back();
     }
 
