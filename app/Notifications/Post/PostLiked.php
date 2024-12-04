@@ -2,12 +2,11 @@
 
 namespace App\Notifications\Post;
 
-use App\Http\Resources\UserResource;
 use App\Models\Post;
 use Illuminate\Bus\Queueable;
+use App\Http\Resources\UserResource;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class PostLiked extends Notification
 {
@@ -28,7 +27,7 @@ class PostLiked extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -38,11 +37,30 @@ class PostLiked extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $authUser = auth()->user();
         return [
             'post_link' => route('posts.show', $this->post->uuid),
             'message' => 'Liked your post',
-            'sender' => UserResource::make($authUser),
+            'sender' => UserResource::make(auth()->user()),
         ];
+    }
+
+    /**
+     * Get the broadcastable representation of the notification.
+     */
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'post_link' => route('posts.show', $this->post->uuid),
+            'message' => 'Liked your post',
+            'sender' => UserResource::make(auth()->user()),
+        ]);
+    }
+
+    /**
+     * The channels the user receives notification broadcasts on.
+     */
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'user.' . $this->id;
     }
 }

@@ -1,13 +1,18 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, reactive, onMounted  } from 'vue';
-
+const user = usePage().props.auth.user
 const unreadNotifications = ref([]);
 
 onMounted(async () => {
     const response = await axios.get(route('user.notifications.tray'))
     unreadNotifications.value = response.data
+
+    Echo.private(`user.${user.id}`)
+        .notification((notification) => {
+            console.log(notification);
+        });
 })
 
 // Notification Tray State

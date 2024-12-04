@@ -1,4 +1,5 @@
 // Import necessary functions and libraries from Vue and Inertia
+import './bootstrap';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'; // Ziggy for route handling
