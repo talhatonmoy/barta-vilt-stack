@@ -38,7 +38,8 @@
 // }
 
 import { router, Link } from '@inertiajs/vue3';
-import { reactive } from 'vue';
+import axios from 'axios';
+import { reactive, ref } from 'vue';
 
 const props = defineProps({
     modelData: {
@@ -52,21 +53,23 @@ const props = defineProps({
 })
 
 // Accepting Post Data
-const modelObj = props.modelData
+const modelObj = ref(props.modelData)
 
 // Preparing Like data
 const likeData = reactive({
-    likes_count: modelObj.likes_count,
-    is_liked_by_current_user: modelObj.is_liked_by_current_user,
-    allLikes: modelObj.likes
+    likes_count: modelObj.value.likes_count,
+    is_liked_by_current_user: modelObj.value.is_liked_by_current_user,
+    allLikes: modelObj.value.likes
 })
 
 // Like Mechanism initiation
-function likePost() {
-    router.visit(route(props.likeActionRouteName, modelObj.uuid), {
-        method: 'post',
-        preserveScroll: true,
-    })
+async function likePost() {
+    const response = await axios.post(`/posts/${modelObj.value.uuid}/like`);
+
+    //Updating Post data
+    likeData.likes_count = response.data.likes_count
+    likeData.is_liked_by_current_user = response.data.is_liked_by_current_user
+    likeData.allLikes = response.data.likes
 }
 
 // Likers Modal
@@ -87,7 +90,7 @@ const modal = reactive({
         <span class="sr-only">Likes</span>
         <svg @click.prevent="likePost" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
             stroke-width="1.5" stroke="currentColor"
-            :class="{ 'fill-red-700 stroke-red-700': likeData.is_liked_by_current_user == true }"
+            :class="(likeData.is_liked_by_current_user == true) ? 'fill-red-700 stroke-red-700' : ''"
             class="size-5 cursor-pointer">
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />

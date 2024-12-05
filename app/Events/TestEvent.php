@@ -2,14 +2,15 @@
 
 namespace App\Events;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 
 class TestEvent implements ShouldBroadcastNow
 {
@@ -18,7 +19,7 @@ class TestEvent implements ShouldBroadcastNow
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(public User  $post_author)
     {
         //
     }
@@ -31,7 +32,7 @@ class TestEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user.2'),
+            new PrivateChannel("App.Models.User.{$this->post_author->id}"),
         ];
     }
 }

@@ -3,6 +3,7 @@ import Footer from '../Partials/Footer.vue';
 import Navigation from '../Partials/Navigation.vue';
 
 
+
 </script>
 
 

@@ -5,10 +5,11 @@ namespace App\Notifications\Post;
 use App\Models\Post;
 use Illuminate\Bus\Queueable;
 use App\Http\Resources\UserResource;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class PostLiked extends Notification
+class PostLiked extends Notification 
 {
     use Queueable;
 
@@ -27,7 +28,8 @@ class PostLiked extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return ['database'];
+        // return ['database', 'broadcast'];
     }
 
     /**
@@ -56,11 +58,5 @@ class PostLiked extends Notification
         ]);
     }
 
-    /**
-     * The channels the user receives notification broadcasts on.
-     */
-    public function receivesBroadcastNotificationsOn(): string
-    {
-        return 'user.' . $this->id;
-    }
+    
 }
