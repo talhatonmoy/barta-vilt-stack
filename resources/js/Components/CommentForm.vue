@@ -37,7 +37,7 @@ function handleSubmit() {
                 <!-- User Avatar -->
                 <div class="flex-shrink-0">
                     <img class="h-10 w-10 rounded-full object-cover"
-                        :src="user.profileImgUrl" alt="Ahmed Shamim" />
+                        :src="user.profileImgUrl" :alt="user.first_name" />
                 </div>
                 <!-- /User Avatar -->
 

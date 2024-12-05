@@ -15,13 +15,14 @@ class UserService{
      */
     public function store($request){
         $validatedData = $request->validated();
-        User::create([
+        $user = User::create([
             'first_name' => $validatedData['first_name'],
             'last_name' => $validatedData['last_name'],
             'user_name' => $validatedData['user_name'],
             'email' => $validatedData['email'],
             'password' => bcrypt($validatedData['password']),
         ]);
+        return $user;
     }
 
     /**

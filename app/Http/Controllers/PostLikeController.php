@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\User;
+use App\Events\TestEvent;
+use App\Http\Resources\Post\PostResource;
 use Illuminate\Http\Request;
+use App\Notifications\Post\PostLiked;
+use Illuminate\Support\Facades\Notification;
 
 class PostLikeController extends Controller
 {
@@ -20,15 +25,29 @@ class PostLikeController extends Controller
         if($like){
             $like->delete();
         }else{
-            Like::create([
+            $like = Like::create([
                 'user_id' => auth()->id(),
                 'likeable_type' => Post::class,
                 'likeable_id' => $post->id,
                 'is_like' => true
             ]);
-            // Fire PostLiked event
+            
+            // Notify Post Author
+            if($post->user_id != auth()->id()){
+                $post->load('user.media');
+                $post_author = User::find($post->user_id);
+                // $post_author->notify(new PostLiked($post));
+                // broadcast(new TestEvent($post_author));
+            }
+            
         }
-        return back();
+        
+        $updatedPost = Post::select(['id', 'uuid', 'user_id', 'excerpt', 'created_at', 'updated_at'])
+        ->with(['media', 'user', 'likes.user'])
+        ->withCount('comments', 'likes')
+            ->find($post->id);
+            
+        return new PostResource($updatedPost);
     }
 
     public function toggleDislike(Post $post)

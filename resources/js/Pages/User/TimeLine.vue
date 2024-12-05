@@ -18,8 +18,9 @@ function loadMorePosts() {
     router.get(nextPageUrl.value, {}, {
         preserveState: true,
         preserveScroll: true, // Preserve scroll position
-        replace: true, // Replace the current page state
+        // replace: true, // Replace the current page state
         onSuccess: (page) => {
+            console.log(page)
             timelinePostCollection.value.push(...page.props.timelinePostsData.data) // Append new posts
             nextPageUrl.value = page.props.timelinePostsData.links.next // Update next page URL
         }
@@ -42,7 +43,7 @@ function loadMorePosts() {
 
 
         <div class="flex justify-center">
-            <button @click="loadMorePosts" v-if="nextPageUrl"
+            <button @click.prevent="loadMorePosts" v-if="nextPageUrl"
                 class="text-gray-900 hover:text-white border-2 border-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
                 Load More
             </button>

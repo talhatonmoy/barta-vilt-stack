@@ -10,6 +10,7 @@ use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\BartaMediaController;
 use App\Http\Controllers\UserDetailController;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Notification\NotificationController;
 
 /**
  * Open routes
@@ -66,14 +67,24 @@ Route::middleware('auth')->group(function(){
     // Post Routes
     Route::resource('posts', PostController::class)->except(['index', 'create']);
 
+
     //Post Likes
     Route::post('/posts/{post:uuid}/like', [PostLikeController::class, 'toggleLike'])->name('posts.like');
+
 
     // Comments
     Route::resource('comments', CommentController::class);
 
-    // Spatie's Media Delete Route
-    Route::delete('media/{id}', [BartaMediaController::class, 'destroy'])->name('media.delete');
+
+    // User Notifications
+    Route::get('/notifications', [NotificationController::class, 'allNotifications'])->name('user.notifications');
+    
+    // Notifications Tray (for returning unread notifications only)
+    Route::get('/notifications/tray', [NotificationController::class, 'notificationTray'])->name('user.notifications.tray');
+
+    // Notifications Mark All As Read
+    Route::post('/notifications/mark_all_as_read', [NotificationController::class, 'markAllAsRead'])->name('user.notifications.mark_all_as_read');
+
 
     // Logout user
     Route::get('logout', [UserAuthController::class, 'logout'])->name('user.logout');
