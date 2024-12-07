@@ -6,12 +6,12 @@ import { onMounted } from 'vue';
 const user = usePage().props.auth.user
 
 
-onMounted(() => {
-    Echo.private('App.Models.User.' + user.id)
-        .notification((notification) => {
-            alert(notification.type)
-        });
-})
+// onMounted(() => {
+//     Echo.private('App.Models.User.' + user.id)
+//         .notification((notification) => {
+//             alert(notification.type)
+//         });
+// })
 
 
 const { userNotifications } = usePage().props
@@ -41,7 +41,8 @@ const { userNotifications } = usePage().props
 <template>
     <UserLayout>
         <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 min-h-screen">
-            <article class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5  sm:px-6">
+            <article
+                class="bg-white border-[1px] border-neutral-300 rounded-lg shadow mx-auto max-w-none px-4 py-5  sm:px-6">
                 <!-- For no unread notification -->
                 <div v-show="userNotifications.length == 0" class="flex flex-col items-center py-5 space-y-3">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

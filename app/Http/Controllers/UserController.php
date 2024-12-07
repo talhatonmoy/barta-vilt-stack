@@ -75,4 +75,12 @@ class UserController extends Controller
         }
         return redirect()->route('user.profile.show', $user->user_name);
     }
+
+    // List All Users
+    public function listAllUsers(){
+        $allUsers = User::with('media')->paginate(12);
+        return Inertia::render('User/AllUsers', [
+            'allUsers' => UserResource::collection($allUsers)
+        ]);
+    }
 }

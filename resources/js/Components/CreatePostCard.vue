@@ -72,7 +72,7 @@ function removePreviewImage(index) {
 <template>
     <form @submit.prevent="handleSubmit" @click="textAreaRowControl.increaseRowNumber"
         v-click-away="textAreaRowControl.resetRowNumber"
-        class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6 space-y-3">
+        class="bg-white border-[1px] border-neutral-300  rounded-lg mx-auto max-w-none px-4 py-5 sm:px-6 space-y-3">
 
         <div>
             <div class="flex items-start space-x-3">

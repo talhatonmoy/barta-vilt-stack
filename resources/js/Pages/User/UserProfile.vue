@@ -36,13 +36,13 @@ function loadMorePost() {
         <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 min-h-screen">
             <!-- Cover Container -->
             <section
-                class="bg-white border-2 p-8 border-gray-800 rounded-xl min-h-[350px] space-y-8 flex items-center flex-col justify-center">
+                class="bg-white border-[1px] border-neutral-300  p-8 rounded-xl min-h-[350px] space-y-8 flex items-center flex-col justify-center">
                 <!-- Profile Info -->
                 <div class="flex gap-4 justify-center flex-col text-center items-center">
                     <!-- Avatar -->
                     <div class="relative">
-                        <img class="w-32 h-32 rounded-full border-2 border-gray-800" :src="userData.profileImgUrl"
-                            :alt="userData.first_name" />
+                        <img class="w-32 h-32 rounded-full ring-2 ring-neutral-900"
+                            :src="userData.profileImgUrl" :alt="userData.first_name" />
                         <!--            <span class="bottom-2 right-4 absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>-->
                     </div>
                     <!-- /Avatar -->
@@ -61,7 +61,8 @@ function loadMorePost() {
                     <!-- Total Posts Count -->
                     <div class="flex flex-col justify-center items-center">
                         <h4 class="sm:text-xl font-bold">{{ userData.posts_count }}</h4>
-                        <p class="text-gray-600">{{ SingularPluralHelperTextOnly(userData.posts_count, 'Post', 'Posts') }}
+                        <p class="text-gray-600">{{ SingularPluralHelperTextOnly(userData.posts_count, 'Post', 'Posts')
+                            }}
                         </p>
                     </div>
 
@@ -95,7 +96,7 @@ function loadMorePost() {
             <PostCard v-for="(post, index) in userPostsCollection" :key="index" :post="post" />
 
             <div class="flex justify-center">
-                <button @click="loadMorePost"  v-if="nextPageUrl"
+                <button @click="loadMorePost" v-if="nextPageUrl"
                     class="text-gray-900 hover:text-white border-2 border-gray-800 hover:bg-gray-900 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center hidden md:block">
                     Load More
                 </button>

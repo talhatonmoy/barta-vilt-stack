@@ -53,13 +53,13 @@ Route::middleware('auth')->group(function(){
     Route::get('/user/profile/edit', [UserController::class, 'userProfileEdit'])->name('user.profile.edit');
     // Handle User Profile Update
     Route::post('/user/profile/edit', [UserController::class, 'userProfileUpdate'])->name('user.profile.update');
-    
+    //People - List Users
+    Route::get('/users', [UserController::class, 'listAllUsers'])->name('users.list');
+
     // User Detail Store
     Route::post('user/profile/detail', [UserDetailController::class, 'userDetailStore'])->name('user.detail.store');
-    
     // User Detail Edit
     Route::get('user/profile/detail', [UserDetailController::class, 'userDetailEdit'])->name('user.detail.edit');
-
     // Handle User Detail update
     Route::patch('user/profile/detail', [UserDetailController::class, 'userDetailUpdate'])->name('user.detail.update');
 
@@ -84,7 +84,6 @@ Route::middleware('auth')->group(function(){
 
     // Notifications Mark All As Read
     Route::post('/notifications/mark_all_as_read', [NotificationController::class, 'markAllAsRead'])->name('user.notifications.mark_all_as_read');
-
 
     // Logout user
     Route::get('logout', [UserAuthController::class, 'logout'])->name('user.logout');

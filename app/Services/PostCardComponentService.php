@@ -13,10 +13,15 @@ class PostCardComponentService{
     public function getLatestPostCollectionFromAllUsers()
     {
         $posts = Post::select(['id', 'uuid', 'user_id', 'excerpt', 'created_at', 'updated_at'])
-        ->with([ 'media', 'user', 'likes.user'])
+        ->with([ 'media', 'user.media', 'likes.user'])
         ->withCount('comments', 'likes')
         ->latest()->paginate(10);
 
         return $posts;
+    }
+
+
+    public function getUserDataWithDetails(){
+        return auth()->user()->load(['user_details', 'media']);
     }
 }

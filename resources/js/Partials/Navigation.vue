@@ -34,7 +34,7 @@ const userAccountMenu = reactive({
 
 <template>
     <nav class="bg-white shadow">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="main-container">
             <div class="flex h-16 justify-between gap-2">
                 <!-- Left Part -->
                 <div class="flex">
@@ -46,14 +46,21 @@ const userAccountMenu = reactive({
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                         <!-- Left Side Desktop Menu Items -->
                         <template v-if="user">
-                            <Link :href="route('user.timeline')" :class="{'border-b-2' : $page.url === '/timeline'}"
-                                class="inline-flex items-center  border-gray-800 px-1 pt-1 text-sm font-semibold text-gray-900">
-                            Timeline</Link>
+                            <Link :href="route('user.timeline')" :class="{' border-b-gray-800 text-gray-900' : $page.url === '/timeline'}"
+                                class="inline-flex items-center border-b-2 border-transparent  border-gray-800 px-1 pt-1 text-sm font-medium text-gray-600  hover:border-gray-300 hover:text-gray-800">
+                            Timeline
+                            </Link>
                             <a href="#"
-                                class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600 hover:border-gray-300 hover:text-gray-800">For
-                                you</a>
-                            <a href="#"
-                                class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600 hover:border-gray-300 hover:text-gray-800">People</a>
+                                class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600  hover:border-gray-300 hover:text-gray-800">For
+                                you
+                            </a>
+
+                            <Link :href="route('users.list')"
+                                :class="{ 'border-b-gray-800 text-gray-900': $page.url === '/users' }"
+                                class="inline-flex items-center border-b-2 border-transparent  border-gray-800 px-1 pt-1 text-sm font-medium text-gray-600  hover:border-gray-300 hover:text-gray-800">
+                            People
+                            </Link>
+
                         </template>
                     </div>
 
@@ -146,31 +153,31 @@ const userAccountMenu = reactive({
         </div>
 
         <!-- Mobile userAccountMenu, show/hide based on userAccountMenu state. -->
-            <div v-show="bartaNavMenu.open" class="sm:hidden transition-all duration-300" id="mobile-userAccountMenu">
-                <div class="border-t border-gray-200 pt-4 pb-3">
-                    <div class="flex items-center px-4">
-                        <div>
-                            <div class="text-base font-medium text-gray-800">
-                                Ahmed Shamim Hasan Shaon
-                            </div>
-                            <div class="text-sm font-medium text-gray-500">
-                                shaon@shamim.com
-                            </div>
+        <div v-show="bartaNavMenu.open" class="sm:hidden transition-all duration-300" id="mobile-userAccountMenu">
+            <div class="border-t border-gray-200 pt-4 pb-3">
+                <div class="flex items-center px-4">
+                    <div>
+                        <div class="text-base font-medium text-gray-800">
+                            Ahmed Shamim Hasan Shaon
+                        </div>
+                        <div class="text-sm font-medium text-gray-500">
+                            shaon@shamim.com
                         </div>
                     </div>
-                    <div class="mt-3 space-y-1">
-                        <a href="/user/profile"
-                            class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Your
-                            Profile</a>
-                        <a href="/user/edit-profile"
-                            class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Edit
-                            Profile</a>
-                        <a href=""
-                            class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Sign
-                            out</a>
-                    </div>
+                </div>
+                <div class="mt-3 space-y-1">
+                    <a href="/user/profile"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Your
+                        Profile</a>
+                    <a href="/user/edit-profile"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Edit
+                        Profile</a>
+                    <a href=""
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Sign
+                        out</a>
                 </div>
             </div>
+        </div>
     </nav>
 </template>
 

@@ -8,9 +8,9 @@ const unreadNotifications = ref([]);
 const unreadNotificationCount = ref(0);
 
 onMounted(async () => {
-    const response = await axios.get(route('user.notifications.tray'))
-    unreadNotifications.value = response.data
-    unreadNotificationCount.value = response.data.length
+    // const response = await axios.get(route('user.notifications.tray'))
+    // unreadNotifications.value = response.data
+    // unreadNotificationCount.value = response.data.length
 
 
     // Echo.private(`App.Models.User.${user.id}`)
@@ -26,11 +26,20 @@ onMounted(async () => {
 })
 
 
+async function fetchUnreadNotifications() {
+    const response = await axios.get(route('user.notifications.tray'))
+    unreadNotifications.value = response.data
+    unreadNotificationCount.value = response.data.length
+}
+
 // Notification Tray State
 const notificationTray = reactive({
     open: false,
     handleChange() {
         notificationTray.open = !notificationTray.open
+        if (notificationTray.open == true) {
+            fetchUnreadNotifications()
+        }
     },
     reset() {
         notificationTray.open = false
