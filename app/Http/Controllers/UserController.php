@@ -45,7 +45,8 @@ class UserController extends Controller
     public function userProfileShow(User $user){
 
         $userPosts = $user->posts()->paginate(10);
-        $user->loadCount('comments', 'posts');
+        $user->loadCount(['comments', 'posts']);
+        $user->load(['sentFriendRequests', 'friends']);
 
         return Inertia::render('User/UserProfile', [
             'userData' => UserResource::make($user),
@@ -78,7 +79,9 @@ class UserController extends Controller
 
     // List All Users
     public function listAllUsers(){
-        $allUsers = User::with('media')->paginate(12);
+        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends'])
+                        ->where('id', '!=' , auth()->id())
+                        ->paginate(12);
         return Inertia::render('User/AllUsers', [
             'allUsers' => UserResource::collection($allUsers)
         ]);

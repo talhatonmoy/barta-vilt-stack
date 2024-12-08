@@ -2,15 +2,15 @@
 import { Link, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, reactive, onMounted  } from 'vue';
+import PostLikeNotificationItem from './PostLikeNotificationItem.vue';
+import FriendRequestSentNotificationItem from './FriendRequestSentNotificationItem.vue';
 const user = usePage().props.auth.user
 
 const unreadNotifications = ref([]);
 const unreadNotificationCount = ref(0);
 
 onMounted(async () => {
-    // const response = await axios.get(route('user.notifications.tray'))
-    // unreadNotifications.value = response.data
-    // unreadNotificationCount.value = response.data.length
+    // fetchUnreadNotifications()
 
 
     // Echo.private(`App.Models.User.${user.id}`)
@@ -37,9 +37,7 @@ const notificationTray = reactive({
     open: false,
     handleChange() {
         notificationTray.open = !notificationTray.open
-        if (notificationTray.open == true) {
-            fetchUnreadNotifications()
-        }
+        fetchUnreadNotifications()
     },
     reset() {
         notificationTray.open = false
@@ -68,11 +66,14 @@ function markAllNotificationAsRead() {
         <button @click="notificationTray.handleChange" v-click-away="notificationTray.reset"
             class="relative z-10 block text-gray-700 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="size-5 sm:size-6 " :class="(notificationTray.open) ? 'stroke-blue-600' : ''"> 
+                stroke="currentColor" class="size-5 sm:size-6 "
+                :class="(notificationTray.open) ? 'stroke-blue-600' : ''">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
             </svg>
-            <p v-if="unreadNotificationCount > 0" class="absolute -top-2 -right-1 text-xs bg-red-500 p-2 text-white w-5 h-5 flex items-center justify-center rounded-full leading-none">{{ unreadNotificationCount }}</p>
+            <p v-if="unreadNotificationCount > 0"
+                class="absolute -top-2 -right-1 text-xs bg-red-500 p-2 text-white w-5 h-5 flex items-center justify-center rounded-full leading-none">
+                {{ unreadNotificationCount }}</p>
         </button>
 
         <!-- Dropdown menu -->
@@ -96,16 +97,13 @@ function markAllNotificationAsRead() {
                     <!-- Displaying all unread notifications -->
                     <template v-show="unreadNotifications.length > 0"
                         v-for="(notification, index) in unreadNotifications" :key="index">
-                        <Link :href="notification.data.post_link"
-                            class="flex items-center px-4 py-3 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark1:hover:bg-gray-700 dark1:border-gray-700">
-                        <img class="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full"
-                            :src="notification.data.sender.profileImgUrl" :alt="notification.data.sender.first_name" />
-                        <p class="mx-2 text-xs text-gray-600 dark1:text-white">
-                            <span class="font-bold">
-                                {{ notification.data.sender.first_name }} {{ notification.data.sender.last_name }}
-                            </span> {{ notification.data.message }} . {{ notification.created_at }}
-                        </p>
-                        </Link>
+                        <!-- Post Like -->
+                        <PostLikeNotificationItem v-if="notification.data.type === 'postLike'"
+                            :notification="notification" />
+                        
+                        <!-- Friend Request Sent -->
+                        <FriendRequestSentNotificationItem v-if="notification.data.type === 'friendRequestSent'"
+                            :notification="notification" />
                     </template>
 
                 </div>
@@ -117,9 +115,9 @@ function markAllNotificationAsRead() {
                     See all notifications
                     </Link>
 
-                    <button @click.prevent = "markAllNotificationAsRead"
+                    <button @click.prevent="markAllNotificationAsRead"
                         class="block w-1/2 py-2 font-medium text-xs text-center text-white bg-gray-800 dark1:bg-gray-700 hover:underline">
-                    Mark all as read
+                        Mark all as read
                     </button>
                 </div>
             </div>

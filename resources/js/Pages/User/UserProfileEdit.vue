@@ -42,6 +42,7 @@ const openIndex = ref(1);
 
 <template>
     <UserLayoutWithSidebar>
+ 
         <main v-if="openIndex == 1" class="container max-w-4xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen ">
             <!-- Profile Edit Form -->
 

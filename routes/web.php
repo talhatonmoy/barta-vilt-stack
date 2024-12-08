@@ -10,6 +10,7 @@ use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\BartaMediaController;
 use App\Http\Controllers\UserDetailController;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Friend\FriendRequestController;
 use App\Http\Controllers\Notification\NotificationController;
 
 /**
@@ -84,6 +85,13 @@ Route::middleware('auth')->group(function(){
 
     // Notifications Mark All As Read
     Route::post('/notifications/mark_all_as_read', [NotificationController::class, 'markAllAsRead'])->name('user.notifications.mark_all_as_read');
+
+    /**
+     * Routes related to friends
+     */
+    // Friend request sent
+    Route::post('friend-requests/{user:user_name}', [FriendRequestController::class, 'toggleFriendRequest'])->name('friend.request.toggle');
+    Route::post('friend-requests/{friend_requests}/accept', [FriendRequestController::class, 'acceptFriendRequest'])->name('friend.request.accept');
 
     // Logout user
     Route::get('logout', [UserAuthController::class, 'logout'])->name('user.logout');

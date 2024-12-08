@@ -36,7 +36,7 @@ class PostLikeController extends Controller
             if($post->user_id != auth()->id()){
                 $post->load('user.media');
                 $post_author = User::find($post->user_id);
-                // $post_author->notify(new PostLiked($post));
+                $post_author->notify(new PostLiked($post));
                 // broadcast(new TestEvent($post_author));
             }
             

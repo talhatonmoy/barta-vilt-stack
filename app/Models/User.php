@@ -80,4 +80,45 @@ class User extends Authenticatable implements HasMedia
             ->useFallbackUrl('/img/placeholders/profile.jpg')
             ->singleFile();
     }
+
+    /**
+     * Relationships related to friends
+     */
+    
+     //(As loggedin User) - Friend requests i sent
+     public function sentFriendRequests(){
+        return $this->hasMany(FriendRequests::class, 'sender_id');
+     }
+
+    //(As loggedin User) - Friend requests i received
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(FriendRequests::class, 'receiver_id');
+    }
+
+    // I can be friends of many users
+    public function friendsOf(){
+        return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id');
+    }
+
+    // Many Users can be my friend
+    public function friends(){
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id');    
+                    // ->withPivot('friend_id');
+    }
+
+    // All friends
+    public function allFriends() {
+        return $this->friends->merge($this->friendsOf());
+    }
+
+    // Mutual friends
+    public function mutualFriends(User $otherUser){
+        $loggedinUserFriendIds  = $this->allFriends()->pluck('id')->toArray();
+        $otherUserFriendIds = $otherUser->allFriends()->pluck('id')->toArray();
+
+        $mutualFriendIds = array_intersect($loggedinUserFriendIds, $otherUserFriendIds);
+        return User::whereIn('id', $mutualFriendIds)->get();
+    }
+    
 }

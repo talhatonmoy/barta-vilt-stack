@@ -1,7 +1,9 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
 import UserLayout from '../../Layouts/UserLayout.vue';
+import PostLikeNotificationItem from '../../Components/Notifications/PostLikeNotificationItem.vue';
 import { onMounted } from 'vue';
+import FriendRequestSentNotificationItem from '../../Components/Notifications/FriendRequestSentNotificationItem.vue';
 
 const user = usePage().props.auth.user
 
@@ -57,16 +59,13 @@ const { userNotifications } = usePage().props
 
                 <div class="">
                     <template v-for="(notification, index) in userNotifications" :key="index">
-                        <Link :href="notification.data.post_link"
-                            class="flex items-center py-2 -mx-2 transition-colors duration-300 transform border-b border-gray-100 hover:bg-gray-50 dark1:hover:bg-gray-700 dark1:border-gray-700">
-                        <img class="flex-shrink-0 object-cover w-8 h-8 mx-1 rounded-full"
-                            :src="notification.data.sender.profileImgUrl" :alt="notification.data.sender.first_name" />
-                        <p class="mx-2 text-sm text-gray-600 dark1:text-white">
-                            <span class="font-bold" href="#">
-                                {{ notification.data.sender.first_name }} {{ notification.data.sender.last_name }}
-                            </span> {{ notification.data.message }} . {{ notification.created_at }}
-                        </p>
-                        </Link>
+                        <!-- <pre>
+                         {{ notification }}
+                       </pre> -->
+                        <PostLikeNotificationItem v-if="notification.data.type === 'postLike'"
+                            :notification="notification" />
+                        <FriendRequestSentNotificationItem v-if="notification.data.type === 'friendRequestSent'"
+                            :notification="notification" />
                     </template>
                 </div>
             </article>

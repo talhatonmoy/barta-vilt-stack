@@ -3,11 +3,12 @@
 namespace App\Notifications\Post;
 
 use App\Models\Post;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use App\Http\Resources\UserResource;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
 class PostLiked extends Notification 
 {
@@ -42,6 +43,8 @@ class PostLiked extends Notification
         return [
             'post_link' => route('posts.show', $this->post->uuid),
             'message' => 'Liked your post',
+            'excerpt' => Str::limit($this->post->excerpt, 60, '...'),
+            'type' => 'postLike',
             'sender' => UserResource::make(auth()->user()),
         ];
     }
