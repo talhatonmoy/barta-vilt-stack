@@ -1,16 +1,18 @@
 <script setup>
-import { router, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { router, usePage, useForm } from '@inertiajs/vue3';
+import { reactive, ref } from 'vue';
 import UserCard from '../../Components/User/UserCard.vue';
 import FrameLayout from '../../Layouts/FrameLayout.vue'
 import SidebarFilter from '../../Partials/AllUsers/SidebarFilter.vue';
 const props = usePage().props;
 
 const allUsers = props.allUsers
+const filterableUserDetails = props.filterableUserDetails;
 
 const userCollection = ref(allUsers.data)
 
 const nextPageUrl = ref(props.allUsers.links.next)
+
 function loadMoreUser() {
     if (!nextPageUrl) {
         return
@@ -20,16 +22,43 @@ function loadMoreUser() {
         preserveState: true, 
         preserveScroll: true,
         onSuccess: (page) => {
-            console.log(page.props.allUsers.data)
-            if (userCollection.value.push(...page.props.allUsers.data)) {
-                console.log('done')
-            } else {
-            console.log('Not done')     
-            }
-            // nextPageUrl.value =  page.props.allUsers.links.next
+            userCollection.value.push(...page.props.allUsers.data)
+            nextPageUrl.value =  page.props.allUsers.links.next
         }
     })
 }
+
+
+/**
+ * Child Component state
+ * <SidebarFilter/>
+ */
+const filterMechanism = reactive({
+    form: {
+        city: "",
+        gender: "",
+        primaryLang: ""
+    },
+    updateFilter() {
+        this.performSearch()
+    },
+    performSearch() {
+        router.visit(route('users.list'), {
+            method: 'post',
+            preserveState: true,
+            data: {
+                city: this.form.city,
+                gender: this.form.gender,
+                primaryLang: this.form.primaryLang
+            },
+            onSuccess: (page) => {
+                userCollection.value = page.props.allUsers.data
+            }
+        })
+    }
+
+ })
+
 
 </script>
 
@@ -39,7 +68,9 @@ function loadMoreUser() {
             <div class="mt-8 flex justify-between md:gap-4 lg:gap-8 min-h-screen">
                 <!-- Sidebar -->
                 <div class="md:w-4/12 lg:w-3/12 hidden  md:block">
-                    <SidebarFilter class="sticky top-24" />
+                    {{ nextPageUrl }}
+                    <SidebarFilter class="sticky top-24" :filterableData="filterableUserDetails"
+                        :filterMechanism="filterMechanism" />
                 </div>
                 <!-- Content Area -->
                 <div class=" w-full md:w-8/12 lg:w-9/12">

@@ -54,8 +54,9 @@ Route::middleware('auth')->group(function(){
     Route::get('/user/profile/edit', [UserController::class, 'userProfileEdit'])->name('user.profile.edit');
     // Handle User Profile Update
     Route::post('/user/profile/edit', [UserController::class, 'userProfileUpdate'])->name('user.profile.update');
+    
     //People - List Users
-    Route::get('/users', [UserController::class, 'listAllUsers'])->name('users.list');
+    Route::any('/users', [UserController::class, 'listAllUsers'])->name('users.list');
 
     // User Detail Store
     Route::post('user/profile/detail', [UserDetailController::class, 'userDetailStore'])->name('user.detail.store');

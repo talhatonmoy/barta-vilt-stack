@@ -10,11 +10,14 @@ use Illuminate\Support\Str;
 use App\Services\UserService;
 use App\Helpers\MediaCollection;
 use App\Helpers\ReusableHelpers;
+use App\Http\Requests\UserSearchFilterRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\Post\PostResourceForUserProfilePage;
 use App\Http\Resources\UserResource;
+use App\Models\UserDetail;
 use App\Services\PostCardComponentService;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -78,12 +81,40 @@ class UserController extends Controller
     }
 
     // List All Users
-    public function listAllUsers(){
-        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
+    public function listAllUsers(UserSearchFilterRequest $request){
+        
+        $searchData = $request->validated();    
+        // dd($searchData);
+
+        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests', 'user_details'])
+                        ->when($searchData['city'] ?? false, function($query) use ($searchData){
+                            // Checking at (hasOne - user_details related table)
+                            return $query->whereHas('user_details', function($query) use ($searchData){
+                                 $query->where('current_city', '=' , $searchData['city']);
+                            });
+                        })
+                        ->when($searchData['gender'] ?? false, function ($query) use ($searchData) {
+                            // Checking at (hasOne - user_details related table)
+                            return $query->whereHas('user_details', function($query) use ($searchData){
+                                $query->where('gender', $searchData['gender']);
+                            });
+                        })
+                        ->when($searchData['primaryLang'] ?? false, function ($query) use ($searchData) {
+                            // Checking at (hasOne - user_details related table)
+                            return $query->whereHas('user_details', function($query) use ($searchData){
+                                $query->where('primary_lang', $searchData['primaryLang']);
+                            });
+                        })
                         ->where('id', '!=' , auth()->id())
                         ->paginate(12);
+
+        $filterableUserDetails = [];
+        $filterableUserDetails['uniqueCities'] = UserDetail::whereNotNull('current_city')->distinct()->pluck('current_city');
+        $filterableUserDetails['primaryLang'] = UserDetail::whereNotNull('primary_lang')->distinct()->pluck('primary_lang');
+
         return Inertia::render('User/AllUsers', [
-            'allUsers' => UserResource::collection($allUsers)
+            'allUsers' => UserResource::collection($allUsers),
+            'filterableUserDetails' => $filterableUserDetails,
         ]);
     }
 }

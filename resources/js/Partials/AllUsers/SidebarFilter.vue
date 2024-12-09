@@ -1,10 +1,31 @@
 <script setup>
+import { watch, computed } from 'vue';
+import { router, useForm } from '@inertiajs/vue3';
+
+const props = defineProps({
+    filterableData: {
+        type: Object
+    },
+    filterMechanism: {
+        type: Object
+    }
+})
+
+const filterableData = props.filterableData;
+
+const filterMechanism = props.filterMechanism;
+
+
+
 
 </script>
 
 <template>
     <div
         class="main-border   w-full max-w-sm divide-y divide-gray-100 rounded-lg  dark1:bg-gray-800 dark1:divide-gray-700">
+        <!-- <pre>
+            {{ form }}
+        </pre> -->
         <div
             class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark1:bg-gray-800 dark1:text-white">
             Filter By
@@ -13,16 +34,13 @@
             <form class="max-w-sm mx-auto p-4 space-y-4">
                 <!-- By City -->
                 <div>
-                    <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark1:text-white">
+                    <label for="city" class="block mb-2 text-sm font-medium text-gray-900 dark1:text-white">
                         City
                     </label>
-                    <select id="countries"
-                        class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-md  focus:outline-none block w-full p-2 dark1:bg-gray-700 dark1:border-gray-600 dark1:placeholder-gray-400 dark1:text-white dark1:focus:ring-blue-500 dark1:focus:border-blue-500">
-
-                        <option>United States</option>
-                        <option>Canada</option>
-                        <option>France</option>
-                        <option>Germany</option>
+                    <select id="city" v-model="filterMechanism.form.city" @change="filterMechanism.updateFilter"
+                        class="bg-gray-50 border  border-gray-300 capitalize text-gray-900 text-sm rounded-md  focus:outline-none block w-full p-2 dark1:bg-gray-700 dark1:border-gray-600 dark1:placeholder-gray-400 dark1:text-white dark1:focus:ring-blue-500 dark1:focus:border-blue-500">
+                        <option v-for="(city, index) in filterableData.uniqueCities" :key="city" :value="city">{{ city }}
+                        </option>
                     </select>
                 </div>
 
@@ -32,21 +50,31 @@
                         Gender
                     </label>
                     <div class="flex items-center mb-1">
-                        <input id="country-option-1" type="radio" name="countries" value="male"
-                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600"
-                            checked>
+                        <input id="country-option-1" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.updateFilter"
+                            name="gender" value="male"
+                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
                         <label for="country-option-1"
                             class="block ms-2  text-sm font-medium text-gray-900 dark1:text-gray-300">
                             Male
                         </label>
                     </div>
                     <div class="flex items-center">
-                        <input id="country-option-2" type="radio" name="countries" value="female"
-                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600"
-                            checked>
+                        <input id="country-option-2" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.updateFilter"
+                            name="gender" value="female"
+                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
                         <label for="country-option-2"
                             class="block ms-2  text-sm font-medium text-gray-900 dark1:text-gray-300">
                             Female
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input id="country-option-3" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.updateFilter"
+                            name="gender" value="3rd gender"
+                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
+                        <label for="country-option-3"
+                            class="block ms-2  text-sm font-medium text-gray-900 dark1:text-gray-300">
+                            3rd Gender
                         </label>
                     </div>
                 </div>
@@ -56,35 +84,25 @@
                     <label for="PrimaryLanguage" class="block mb-2 text-sm font-medium text-gray-900 dark1:text-white">
                         Primary Language
                     </label>
-                    <div class="flex items-center mb-1">
-                        <input id="bangla" type="radio" name="countries" value="male"
-                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600"
-                            checked>
-                        <label for="bangla" class="block ms-2  text-sm font-medium text-gray-900 dark1:text-gray-300">
-                            Bangla
+
+                    <div class="flex items-center mb-1" v-for="(language, index) in filterableData.primaryLang"
+                        :key="index">
+                        <input :id="language" type="radio" v-model="filterMechanism.form.primaryLang" @change="filterMechanism.updateFilter"
+                            name="primary_lang" :value="language"
+                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
+                        <label :for="language"
+                            class="block ms-2 capitalize text-sm font-medium text-gray-900 dark1:text-gray-300">
+                            {{ language }}
                         </label>
                     </div>
 
-                    <div class="flex items-center mb-1">
-                        <input id="English" type="radio" name="countries" value="male"
-                            class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600"
-                            checked>
-                        <label for="English" class="block ms-2  text-sm font-medium text-gray-900 dark1:text-gray-300">
-                            English
-                        </label>
-                    </div>
                 </div>
             </form>
         </div>
         <a href="#"
             class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark1:bg-gray-800 dark1:hover:bg-gray-700 dark1:text-white">
-            <div class="inline-flex items-center ">
-                <svg class="w-4 h-4 me-2 text-gray-500 dark1:text-gray-400" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
-                    <path
-                        d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
-                </svg>
-                View all
+            <div class="inline-flex items-center hover:underline ">
+                Reset
             </div>
         </a>
     </div>

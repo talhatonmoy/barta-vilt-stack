@@ -1,5 +1,5 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 const props = defineProps({
     userData: {
         type: Object
@@ -14,11 +14,11 @@ const props = defineProps({
             <div class="flex flex-col items-center">
                 <img class="w-24 h-24 mb-3 rounded-full shadow-lg" :src="userData.profileImgUrl"
                     :alt="userData.first_name" />
-                <a href="#">
+                <Link :href="route('user.profile.show', userData.user_name)">
                     <h5 class="mb-1 text-xl font-medium text-gray-900 dark1:text-white">
                         {{ userData.first_name }} {{ userData.last_name }}
                     </h5>
-                </a>
+                </Link>
                 <span class="text-sm text-center font-light text-gray-500 dark1:text-gray-400">
                     {{ userData.bio }}
                 </span>
@@ -70,7 +70,7 @@ const props = defineProps({
                 <div class="flex justify-between">
                     <p class="text-xs text-gray-700 ">Website</p>
                     <a :href="userData.user_details?.website" target="_blank"
-                        class="text-xs hover:underline cursor-pointer text-left font-light text-gray-500 dark1:text-gray-400">
+                        class="text-xs hover:underline cursor-pointer text-pretty text-right font-light text-gray-500 dark1:text-gray-400">
                         {{ userData.user_details?.website }}
                     </a>
                 </div>

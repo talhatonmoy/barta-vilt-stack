@@ -18,6 +18,19 @@ class UserDetailFactory extends Factory
      */
     public function definition(): array
     {
+        // Array of language names
+        $languages = [
+            'English',
+            'Spanish',
+            'French',
+            'German',
+            'Chinese',
+            'Arabic',
+            'Hindi',
+            'Portuguese',
+            'Russian',
+            'Japanese'
+        ];
         
         return [
             'mobile' => $this->faker->phoneNumber(), // Generates a fake phone number
@@ -28,10 +41,10 @@ class UserDetailFactory extends Factory
             'gender' => $this->faker->randomElement(['male', 'female', '3rd gender']), // Random gender
             'date_of_birth' => $this->faker->dateTimeBetween('-60 years', '-18 years')->format('Y-m-d'), // Date in the past, ensuring age is at least 18
             'nick_name' => $this->faker->word(), // Optional nickname with reasonable length
-            'primary_lang' => $this->faker->languageCode(), // Optional language code
-            'secondary_lang' => $this->faker->languageCode(), // Another optional language code
+            'primary_lang' => strtolower($this->faker->randomElement($languages)), // Optional language code
+            'secondary_lang' => strtolower($this->faker->randomElement($languages)), // Another optional language code
             'favorite_quote' => $this->faker->sentence(10), // Optional favorite quote with up to 10 words
-            'current_city' => $this->faker->city(), // Optional city name
+            'current_city' => strtolower($this->faker->city()), // Optional city name
             'user_id' => User::inRandomOrder()->first()->id, // Selects a random existing user
 
         ];

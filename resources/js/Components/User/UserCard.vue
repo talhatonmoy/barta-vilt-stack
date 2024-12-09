@@ -1,6 +1,7 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
     userData: {
@@ -10,10 +11,19 @@ const props = defineProps({
 
 const userData = reactive(props.userData)
 
-function toggleFriendRequest() {
+const friendRequestStatus = ref('Add Friend');
+
+async function toggleFriendRequest() {
+    // const response = await axios.post(route('friend.request.toggle', userData.user_name))
+    // console.log(response.data.status);
     router.visit(route('friend.request.toggle', userData.user_name), {
         method: 'post',
         preserveScroll: true,
+        replace:true,
+        // preserveState: true,
+        onSuccess: (page) => {
+            console.log(page.props.allUsers.data)
+        }
     })
 }
 
@@ -54,9 +64,9 @@ function acceptFriendRequest() {
                 </Link>
             </div>
         </div>
-        <!-- <pre class="text-xs">
+        <pre class="text-xs">
             {{ userData }}
-        </pre> -->
+        </pre>
     </div>
 
 </template>

@@ -16,18 +16,18 @@ class UserDetailsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'mobile' => $this->mobile,
-            'website' => $this->website,
-            'facebook' => $this->facebook,
-            'whatsapp' => $this->whatsapp,
-            'linkedin' => $this->linkedin,
-            'gender' => $this->gender,
-            'date_of_birth' => Carbon::parse($this->date_of_birth)->format('d M Y'), 
-            'nick_name' => $this->nick_name,
-            'current_city' => $this->current_city,
-            'primary_lang' => $this->primary_lang,
-            'secondary_lang' => $this->secondary_lang,
-            'favorite_quote' => $this->favorite_quote,
+            'mobile' => $this->whenHas('mobile'),
+            'website' => $this->whenHas('website'),
+            'facebook' => $this->whenHas('facebook'),
+            'whatsapp' => $this->whenHas('whatsapp'),
+            'linkedin' => $this->whenHas('linkedin'),
+            'gender' => $this->whenHas('gender'),
+            'date_of_birth' => Carbon::parse($this->whenHas('date_of_birth'))->format('d M Y'), 
+            'nick_name' => $this->whenHas('nick_name'),
+            'current_city' => $this->whenHas('current_city'),
+            'primary_lang' => $this->whenHas('primary_lang'),
+            'secondary_lang' => $this->whenHas('secondary_lang'),
+            'favorite_quote' => $this->whenHas('favorite_quote'),
         ];
     }
 }

@@ -22,11 +22,12 @@ class FriendRequestController extends Controller
         if($existingRequest){
             $existingRequest->delete();
         }else{
-            FriendRequests::create([
+            $friendRequest = FriendRequests::create([
                 'sender_id' => auth()->id(),
                 'receiver_id' => $receiver->id,
                 'status' => 'pending'
             ]);
+            // return response()->json(['status' => $friendRequest->status]);
             // Notify Receiver
             $receiver->notify(new FriendRequestSent());
         }
