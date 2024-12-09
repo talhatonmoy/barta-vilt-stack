@@ -44,16 +44,34 @@ class FriendRequestController extends Controller
        // Create Record for friendship table for both users (sender and receiver)
        DB::transaction(function() use($friendRequestData){
             // For Sender
-            Friendship::create([
+            $friendRequestData->friendships()->create([
                 'user_id' => $friendRequestData->sender_id,
                 'friend_id' => $friendRequestData->receiver_id
             ]);
 
             // For Receiver
-            Friendship::create([
+            $friendRequestData->friendships()->create([
                 'user_id' => $friendRequestData->receiver_id,
                 'friend_id' => $friendRequestData->sender_id
             ]);
        });
+    }
+
+
+    public function rejectFriendRequest(FriendRequests $friendRequests){
+        $friendRequestData = $friendRequests; // Just to give a valid name
+
+        // Authorizing
+        if($friendRequestData->receiver_id != auth()->id()){
+            return;
+        }
+
+        $friendRequestData->delete();
+        return back();
+    }
+
+    public function unfriend(FriendRequests $friendRequests){  
+        $friendRequests->delete();
+        return back();
     }
 }

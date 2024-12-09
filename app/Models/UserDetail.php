@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\UserDetailFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,5 +28,13 @@ class UserDetail extends Model
     // Relation with user
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory()
+    {
+        return UserDetailFactory::new();
     }
 }

@@ -85,12 +85,12 @@ class User extends Authenticatable implements HasMedia
      * Relationships related to friends
      */
     
-     //(As loggedin User) - Friend requests i sent
+     //Friend requests a user has sent so far
      public function sentFriendRequests(){
         return $this->hasMany(FriendRequests::class, 'sender_id');
      }
 
-    //(As loggedin User) - Friend requests i received
+    //Friend requests a user has received so far
     public function receivedFriendRequests()
     {
         return $this->hasMany(FriendRequests::class, 'receiver_id');

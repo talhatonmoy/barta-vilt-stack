@@ -42,7 +42,7 @@ function handlePostDelete() {
         <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen">
             <section class="space-y-6">
                 <!-- Barta Card -->
-                <article class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6">
+                <article class="main-border  mx-auto max-w-none px-4 py-5 sm:px-6">
                     <!-- Barta Card Top -->
                     <header>
                         <div class="flex items-center justify-between">
@@ -160,7 +160,7 @@ function handlePostDelete() {
 
                     <!-- Barta User Comments Container -->
                     <article v-if="postDetail.comments_count >0"
-                        class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-2 sm:px-6 min-w-full divide-y">
+                        class="main-border mx-auto max-w-none px-4 py-2 sm:px-6 min-w-full divide-y">
                         <!-- Comment  -->
                         <div v-for="(comment, index) in postDetail.comments" :key="index">
                             <CommentsListCard :commentData="comment" />
@@ -169,7 +169,7 @@ function handlePostDelete() {
                     </article>
 
                     <article v-else
-                        class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-2 sm:px-6 min-w-full divide-y">
+                        class="main-border mx-auto max-w-none px-4 py-2 sm:px-6 min-w-full divide-y">
                         <!-- Comment  -->
                         <p>Be the first to comment on this post</p>
                         <!-- /Comment  -->

@@ -9,6 +9,6 @@
   }
 
   .main-border {
-    @apply bg-white border-[1px] border-neutral-300
+    @apply bg-white border-[1px] border-neutral-300 rounded-lg
   }
 }

@@ -92,6 +92,10 @@ Route::middleware('auth')->group(function(){
     // Friend request sent
     Route::post('friend-requests/{user:user_name}', [FriendRequestController::class, 'toggleFriendRequest'])->name('friend.request.toggle');
     Route::post('friend-requests/{friend_requests}/accept', [FriendRequestController::class, 'acceptFriendRequest'])->name('friend.request.accept');
+    Route::post('friend-requests/{friend_requests}/reject', [FriendRequestController::class, 'rejectFriendRequest'])->name('friend.request.reject');
+    
+    // Unfriend a user
+    Route::post('friend/{friend_requests}/unfriend', [FriendRequestController::class, 'unfriend'])->name('unfriend');
 
     // Logout user
     Route::get('logout', [UserAuthController::class, 'logout'])->name('user.logout');

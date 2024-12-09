@@ -34,7 +34,7 @@ class UserController extends Controller
     public function userStore(UserStoreRequest $request){
         $user = $this->userService->store($request);
 
-        event(new NewUserRegistered($user));
+        // event(new NewUserRegistered($user));
         
         return redirect()->route('user.timeline');
 
@@ -46,7 +46,7 @@ class UserController extends Controller
 
         $userPosts = $user->posts()->paginate(10);
         $user->loadCount(['comments', 'posts']);
-        $user->load(['sentFriendRequests', 'friends']);
+        $user->load(['sentFriendRequests', 'friends', 'receivedFriendRequests']);
 
         return Inertia::render('User/UserProfile', [
             'userData' => UserResource::make($user),
@@ -79,7 +79,7 @@ class UserController extends Controller
 
     // List All Users
     public function listAllUsers(){
-        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends'])
+        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
                         ->where('id', '!=' , auth()->id())
                         ->paginate(12);
         return Inertia::render('User/AllUsers', [

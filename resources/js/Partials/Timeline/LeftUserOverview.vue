@@ -28,7 +28,7 @@ const props = defineProps({
         <div class="w-full max-w-sm bg-white p-4  mt-3  dark1:bg-gray-800 ">
             <p class="text-xs text-gray-500 font-medium text-center">(Favorite Quote)</p>
             <p class="text-sm text-center font-light text-gray-500 dark1:text-gray-400">
-                {{ userData.user_details.favorite_quote }}
+                {{ userData.user_details?.favorite_quote }}
             </p>
         </div>
 
@@ -42,7 +42,7 @@ const props = defineProps({
                         Primary Language
                     </p>
                     <p class="text-xs text-left font-light text-gray-500 dark1:text-gray-400">
-                        {{ userData.user_details.primary_lang }}
+                        {{ userData.user_details?.primary_lang }}
                     </p>
                 </div>
 
@@ -52,7 +52,7 @@ const props = defineProps({
                         Secondary Language
                     </p>
                     <p class="text-xs text-left font-light text-gray-500 dark1:text-gray-400">
-                        {{ userData.user_details.secondary_lang }}
+                        {{ userData.user_details?.secondary_lang }}
                     </p>
                 </div>
 
@@ -62,16 +62,16 @@ const props = defineProps({
                         Date of birth
                     </p>
                     <p class="text-xs text-left font-light text-gray-500 dark1:text-gray-400">
-                        {{ userData.user_details.date_of_birth }}
+                        {{ userData.user_details?.date_of_birth }}
                     </p>
                 </div>
 
                 <!-- Website -->
                 <div class="flex justify-between">
                     <p class="text-xs text-gray-700 ">Website</p>
-                    <a :href="userData.user_details.website" target="_blank"
+                    <a :href="userData.user_details?.website" target="_blank"
                         class="text-xs hover:underline cursor-pointer text-left font-light text-gray-500 dark1:text-gray-400">
-                        {{ userData.user_details.website }}
+                        {{ userData.user_details?.website }}
                     </a>
                 </div>
 
@@ -79,7 +79,7 @@ const props = defineProps({
                 <div class="flex justify-between">
                     <p class="text-xs text-gray-700 ">Lives in</p>
                     <p class="text-xs text-left font-light text-gray-500 dark1:text-gray-400">
-                        {{ userData.user_details.current_city }}
+                        {{ userData.user_details?.current_city }}
                     </p>
                 </div>
             </div>
