@@ -1,7 +1,4 @@
 <script setup>
-import { watch, computed } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
-
 const props = defineProps({
     filterableData: {
         type: Object
@@ -14,9 +11,6 @@ const props = defineProps({
 const filterableData = props.filterableData;
 
 const filterMechanism = props.filterMechanism;
-
-
-
 
 </script>
 
@@ -37,7 +31,7 @@ const filterMechanism = props.filterMechanism;
                     <label for="city" class="block mb-2 text-sm font-medium text-gray-900 dark1:text-white">
                         City
                     </label>
-                    <select id="city" v-model="filterMechanism.form.city" @change="filterMechanism.updateFilter"
+                    <select id="city" v-model="filterMechanism.form.city" @change="filterMechanism.performSearch"
                         class="bg-gray-50 border  border-gray-300 capitalize text-gray-900 text-sm rounded-md  focus:outline-none block w-full p-2 dark1:bg-gray-700 dark1:border-gray-600 dark1:placeholder-gray-400 dark1:text-white dark1:focus:ring-blue-500 dark1:focus:border-blue-500">
                         <option v-for="(city, index) in filterableData.uniqueCities" :key="city" :value="city">{{ city }}
                         </option>
@@ -50,7 +44,7 @@ const filterMechanism = props.filterMechanism;
                         Gender
                     </label>
                     <div class="flex items-center mb-1">
-                        <input id="country-option-1" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.updateFilter"
+                        <input id="country-option-1" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.performSearch"
                             name="gender" value="male"
                             class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
                         <label for="country-option-1"
@@ -59,7 +53,7 @@ const filterMechanism = props.filterMechanism;
                         </label>
                     </div>
                     <div class="flex items-center">
-                        <input id="country-option-2" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.updateFilter"
+                        <input id="country-option-2" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.performSearch"
                             name="gender" value="female"
                             class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
                         <label for="country-option-2"
@@ -69,7 +63,7 @@ const filterMechanism = props.filterMechanism;
                     </div>
 
                     <div class="flex items-center">
-                        <input id="country-option-3" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.updateFilter"
+                        <input id="country-option-3" type="radio" v-model="filterMechanism.form.gender" @change="filterMechanism.performSearch"
                             name="gender" value="3rd gender"
                             class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
                         <label for="country-option-3"
@@ -87,7 +81,7 @@ const filterMechanism = props.filterMechanism;
 
                     <div class="flex items-center mb-1" v-for="(language, index) in filterableData.primaryLang"
                         :key="index">
-                        <input :id="language" type="radio" v-model="filterMechanism.form.primaryLang" @change="filterMechanism.updateFilter"
+                        <input :id="language" type="radio" v-model="filterMechanism.form.primaryLang" @change="filterMechanism.performSearch"
                             name="primary_lang" :value="language"
                             class="w-4 h-4 border-gray-300 focus:outline-none dark1:bg-gray-700 dark1:border-gray-600">
                         <label :for="language"
@@ -101,7 +95,7 @@ const filterMechanism = props.filterMechanism;
         </div>
         <a href="#"
             class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-50 hover:bg-gray-100 dark1:bg-gray-800 dark1:hover:bg-gray-700 dark1:text-white">
-            <div class="inline-flex items-center hover:underline ">
+            <div class="inline-flex items-center hover:underline " @click="filterMechanism.reset">
                 Reset
             </div>
         </a>

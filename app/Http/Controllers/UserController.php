@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewUserRegistered;
-use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use App\Services\UserService;
 use App\Helpers\MediaCollection;
-use App\Helpers\ReusableHelpers;
 use App\Http\Requests\UserSearchFilterRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
@@ -17,7 +14,6 @@ use App\Http\Resources\Post\PostResourceForUserProfilePage;
 use App\Http\Resources\UserResource;
 use App\Models\UserDetail;
 use App\Services\PostCardComponentService;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -82,10 +78,9 @@ class UserController extends Controller
 
     // List All Users
     public function listAllUsers(UserSearchFilterRequest $request){
-        
-        $searchData = $request->validated();    
-        // dd($searchData);
 
+        $searchData = $request->validated();
+  
         $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests', 'user_details'])
                         ->when($searchData['city'] ?? false, function($query) use ($searchData){
                             // Checking at (hasOne - user_details related table)
@@ -106,7 +101,8 @@ class UserController extends Controller
                             });
                         })
                         ->where('id', '!=' , auth()->id())
-                        ->paginate(12);
+                        ->paginate(12)
+                        ->withQueryString();
 
         $filterableUserDetails = [];
         $filterableUserDetails['uniqueCities'] = UserDetail::whereNotNull('current_city')->distinct()->pluck('current_city');

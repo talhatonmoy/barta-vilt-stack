@@ -19,10 +19,8 @@ async function toggleFriendRequest() {
     router.visit(route('friend.request.toggle', userData.user_name), {
         method: 'post',
         preserveScroll: true,
-        replace:true,
-        // preserveState: true,
         onSuccess: (page) => {
-            console.log(page.props.allUsers.data)
+            // console.log(page.props.allUsers.data)
         }
     })
 }
@@ -64,9 +62,9 @@ function acceptFriendRequest() {
                 </Link>
             </div>
         </div>
-        <pre class="text-xs">
+        <!-- <pre class="text-xs">
             {{ userData }}
-        </pre>
+        </pre> -->
     </div>
 
 </template>

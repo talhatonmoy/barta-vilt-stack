@@ -45,7 +45,7 @@ class UserDetailFactory extends Factory
             'secondary_lang' => strtolower($this->faker->randomElement($languages)), // Another optional language code
             'favorite_quote' => $this->faker->sentence(10), // Optional favorite quote with up to 10 words
             'current_city' => strtolower($this->faker->city()), // Optional city name
-            'user_id' => User::inRandomOrder()->first()->id, // Selects a random existing user
+            'user_id' => User::factory(), // Selects a random existing user
 
         ];
     }

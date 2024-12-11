@@ -4,6 +4,10 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { reactive, ref, onBeforeMount } from 'vue';
 import UserLayoutWithSidebar from '../../Layouts/UserLayoutWithSidebar.vue';
 
+defineOptions({
+    layout: UserLayoutWithSidebar
+})
+
 const { userData } = reactive(usePage().props);
 const previewProfileImg = ref('/img/placeholders/profile.jpg')
 
@@ -41,9 +45,7 @@ const openIndex = ref(1);
 </script>
 
 <template>
-    <UserLayoutWithSidebar>
- 
-        <main v-if="openIndex == 1" class="container max-w-4xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen ">
+    <main v-if="openIndex == 1" class="container max-w-4xl mx-auto space-y-8 mt-8 px-2 md:px-0 min-h-screen ">
             <!-- Profile Edit Form -->
 
             <form @submit.prevent="handleSubmit">
@@ -184,8 +186,7 @@ Less Talk, More Code 💻</textarea>
                 </div>
             </form>
             <!-- /Profile Edit Form -->
-        </main>
-    </UserLayoutWithSidebar>
+    </main>
 </template>
 
 <style scoped>

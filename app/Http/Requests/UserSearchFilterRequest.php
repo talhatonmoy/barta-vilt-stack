@@ -20,8 +20,9 @@ class UserSearchFilterRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
+
     {
-        // dd($this->searchData);
+        // dd($this);
         return [
             'city' => 'nullable|string|max:100', // Ensure city is required, a string, and max 100 characters
             'gender' => 'nullable|in:male,female,3rd gender', // Only allow specific values for gender

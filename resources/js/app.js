@@ -6,8 +6,10 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy'; // Ziggy for route hand
 import NProgress from 'nprogress'; // Progress bar library
 import { router } from '@inertiajs/vue3'; // Inertia router
 
+
 // Importing my custom directive 
 import ClickAway from './VueCustomDirectives/ClickAway'; // Import your custom directive
+import FrameLayout from './Layouts/FrameLayout.vue';
 
 // Create Inertia App
 createInertiaApp({
@@ -15,7 +17,9 @@ createInertiaApp({
     resolve: name => {
         // Use import.meta.glob to dynamically load all Vue components in Pages directory eagerly
         const pages = import.meta.glob('./Pages/**/*.vue', { eager: true });
-        return pages[`./Pages/${name}.vue`]; // Return the specific page component
+        let page = pages[`./Pages/${name}.vue`]; // Return the specific page component
+        page.default.layout = page.default.layout || FrameLayout
+        return page;
     },
     setup({ el, App, props, plugin }) {
         // Create the Vue application instance with the root component and props
