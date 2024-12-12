@@ -35,9 +35,9 @@ class UserService{
         if (auth()->id()) {
             $userData = User::with('media')
                 ->withCount('comments', 'posts')
-                ->find(auth()->id());
-                
+                ->find(auth()->id()); 
             return UserResource::make($userData);
+            // return $userData;
         }
         return null;
     }

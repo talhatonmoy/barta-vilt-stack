@@ -62,9 +62,9 @@ function acceptFriendRequest() {
                 </Link>
             </div>
         </div>
-        <!-- <pre class="text-xs">
+        <pre class="text-xs">
             {{ userData }}
-        </pre> -->
+        </pre>
     </div>
 
 </template>

@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\UserDetail;
 use Illuminate\Support\Str;
 use App\Services\UserService;
 use App\Helpers\MediaCollection;
-use App\Http\Requests\UserSearchFilterRequest;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\UserResource;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Http\Resources\Post\PostResourceForUserProfilePage;
-use App\Http\Resources\UserResource;
-use App\Models\UserDetail;
 use App\Services\PostCardComponentService;
+use App\Http\Requests\UserSearchFilterRequest;
+use App\Http\Resources\Post\PostResourceForUserProfilePage;
 
 class UserController extends Controller
 {
@@ -85,7 +86,7 @@ class UserController extends Controller
                         ->when($searchData['city'] ?? false, function($query) use ($searchData){
                             // Checking at (hasOne - user_details related table)
                             return $query->whereHas('user_details', function($query) use ($searchData){
-                                 $query->where('current_city', '=' , $searchData['city']);
+                                 $query->where('current_city' , $searchData['city']);
                             });
                         })
                         ->when($searchData['gender'] ?? false, function ($query) use ($searchData) {
@@ -103,6 +104,7 @@ class UserController extends Controller
                         ->where('id', '!=' , auth()->id())
                         ->paginate(12)
                         ->withQueryString();
+
 
         $filterableUserDetails = [];
         $filterableUserDetails['uniqueCities'] = UserDetail::whereNotNull('current_city')->distinct()->pluck('current_city');
