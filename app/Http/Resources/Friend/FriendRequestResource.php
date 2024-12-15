@@ -18,7 +18,7 @@ class FriendRequestResource extends JsonResource
             'id' => $this->id,
             'sender_id' => $this->sender_id,
             'receiver_id' => $this->receiver_id,
-            'status' => ucfirst($this->status),
+            'status' =>$this->status,
         ];
     }
 }

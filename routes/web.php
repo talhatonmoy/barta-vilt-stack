@@ -11,6 +11,7 @@ use App\Http\Controllers\BartaMediaController;
 use App\Http\Controllers\UserDetailController;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Friend\FriendRequestController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Notification\NotificationController;
 
 /**
@@ -77,6 +78,9 @@ Route::middleware('auth')->group(function(){
     // Comments
     Route::resource('comments', CommentController::class);
 
+    // Messenger
+    Route::get('/messenger', [MessageController::class, 'indexMessage'])->name('message.index');
+
 
     // User Notifications
     Route::get('/notifications', [NotificationController::class, 'allNotifications'])->name('user.notifications');
@@ -91,7 +95,8 @@ Route::middleware('auth')->group(function(){
      * Routes related to friends
      */
     // Friend request sent
-    Route::post('friend-requests/{user:user_name}', [FriendRequestController::class, 'toggleFriendRequest'])->name('friend.request.toggle');
+    // Route::post('friend-requests/{user:user_name}', [FriendRequestController::class, 'toggleFriendRequest'])->name('friend.request.toggle');
+    Route::post('friend-requests/{user:user_name}/api/{is_api?}', [FriendRequestController::class, 'toggleFriendRequest'])->name('friend.request.toggle');
     Route::post('friend-requests/{friend_requests}/accept', [FriendRequestController::class, 'acceptFriendRequest'])->name('friend.request.accept');
     Route::post('friend-requests/{friend_requests}/reject', [FriendRequestController::class, 'rejectFriendRequest'])->name('friend.request.reject');
     

@@ -33,6 +33,9 @@ class UserResource extends JsonResource
             // Likes Count
             'posts_count' => $this->whenCounted('posts'),
 
+            // Friends Count
+            'friends_count' => $this->whenCounted('friends'),
+
             // Related Models 
             'posts' => PostResourceForUserProfilePage::collection($this->whenLoaded('posts')),
             'user_details' => UserDetailsResource::make($this->whenLoaded('user_details')),
@@ -48,32 +51,49 @@ class UserResource extends JsonResource
         
             'is_my_friend' => $this->isMyFriend(),
 
-            // 'allFriends' => $this->whenLoaded('friends')
+            // 'friends' => $this->whenLoaded('friends')
 
         ];
     }
 
+    /**
+     * If this user model is my (auth user's) friend or not
+     */
     protected function isMyFriend(){
         return $this->whenLoaded('friends', function(){
             return $this->friends->contains('user_name', auth()->user()->user_name);
         });
     }
     
+    /**
+     * If this user model sent friend request to me (auth user)
+     * then this is the record for that
+     */
     protected function getSentFriendRequestDataForLoggedInUser() 
     {
         return $this->whenLoaded('sentFriendRequests', function(){
             if ($this->sentFriendRequests->contains('receiver_id', auth()->id())) {
-                return FriendRequestResource::make($this->sentFriendRequests->where('receiver_id', auth()->id())->firstOrFail());
+                $friendRequest = $this->sentFriendRequests->where('receiver_id', auth()->id())->firstOrFail();
+                return FriendRequestResource::make($friendRequest);
+                // if($friendRequest->status !== 'accepted'){
+                // }
             }
         });
         
     }
     
+    /**
+     * If this user model received any friend request from me (as loggedin user)
+     * then this is the data record for that
+     */
     protected function getReceivedFriendRequestDataForLoggedInUser()
     {
         return $this->whenLoaded('receivedFriendRequests', function(){
             if ($this->receivedFriendRequests->contains('sender_id', auth()->id())) {
-                return FriendRequestResource::make($this->receivedFriendRequests->where('sender_id', auth()->id())->firstOrFail());
+                $friendRequest = $this->receivedFriendRequests->where('sender_id', auth()->id())->firstOrFail();
+                return FriendRequestResource::make($friendRequest);
+                // if ($friendRequest->status !== 'accepted') {
+                // }
             }
         });
         

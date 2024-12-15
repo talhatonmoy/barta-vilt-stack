@@ -45,8 +45,8 @@ class UserController extends Controller
     public function userProfileShow(User $user){
 
         $userPosts = $user->posts()->paginate(10);
-        $user->loadCount(['comments', 'posts']);
-        $user->load(['sentFriendRequests', 'friends', 'receivedFriendRequests']);
+        $user->loadCount(['comments', 'posts', 'friends']);
+        $user->load(['sentFriendRequests', 'receivedFriendRequests']);
 
         return Inertia::render('User/UserProfile', [
             'userData' => UserResource::make($user),
@@ -82,7 +82,7 @@ class UserController extends Controller
 
         $searchData = $request->validated();
   
-        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests', 'user_details'])
+        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
                         ->when($searchData['city'] ?? false, function($query) use ($searchData){
                             // Checking at (hasOne - user_details related table)
                             return $query->whereHas('user_details', function($query) use ($searchData){

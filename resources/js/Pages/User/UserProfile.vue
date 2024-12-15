@@ -3,7 +3,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import CreatePostCard from '../../Components/CreatePostCard.vue';
 import PostCard from '../../Components/PostCard.vue';
 import { SingularPluralHelperTextOnly } from '../../Helpers/SingularPluralHelper';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 const props = usePage().props;
 
@@ -29,53 +29,65 @@ function loadMorePost() {
 }
 
 
-function withdrawFriendRequest() {
-    router.visit(route('friend.request.toggle', userData.user_name), {
-        method: 'post',
-        preserveScroll: true
-    })
-}
+const friendRequest = reactive({
+    status: (userData.received_friend_request_data)
+        ? userData.received_friend_request_data.status
+        : (userData.sent_friend_request_data)
+        ? userData.sent_friend_request_data.status
+        : 'add friend',
 
-function acceptFriendRequest() {
-    router.visit(route('friend.request.accept', userData.sent_friend_request_data), {
-        method: 'post',
-        preserveScroll: true
-    })
-}
+    toggle() {
+        router.visit(route('friend.request.toggle', userData.user_name), {
+            method: 'post',
+            preserveScroll: true,
+        })
+    },
 
-function toggleFriendRequest() {
-    router.visit(route('friend.request.toggle', userData.user_name), {
-        method: 'post',
-        preserveScroll: true,
-    })
-}
+    withdraw() {
+        router.visit(route('friend.request.toggle', userData.user_name), {
+            method: 'post',
+            preserveScroll: true
+        })
+    },
 
-function rejectFriendRequest() {
-    router.visit(route('friend.request.reject', userData.sent_friend_request_data.id), {
-        method: 'post',
-        preserveScroll: true,
-        onBefore: () => {   
-            return confirm(`Are you really want to reject this request ?`)
-        }
-    })
-}
+    accept() {
+        router.visit(route('friend.request.accept', userData.sent_friend_request_data), {
+            method: 'post',
+            preserveScroll: true
+        })
+    },
 
-function unfriendThisUser() {
-    router.visit(route('unfriend', (userData.received_friend_request_data) ? userData.received_friend_request_data.id : userData.sent_friend_request_data.id), {
-        method: 'post',
-        preserveScroll: true,
-        onBefore: () => {
-            return confirm(`Are you really want to unfriend ${userData.first_name} ${userData.last_name} ?`)
-        }
-    })
-}
+    reject() {
+        router.visit(route('friend.request.reject', userData.sent_friend_request_data.id), {
+            method: 'post',
+            preserveScroll: true,
+            onBefore: () => {
+                return confirm(`Are you really want to reject this request ?`)
+            }
+        })
+    },
+
+    unfriendThisUser() {
+        router.visit(route('unfriend', (userData.received_friend_request_data) ? userData.received_friend_request_data.id : userData.sent_friend_request_data.id), {
+            method: 'post',
+            preserveScroll: true,
+            onBefore: () => {
+                return confirm(`Are you really want to unfriend ${userData.first_name} ${userData.last_name} ?`)
+            }
+        })
+    }
+})
 
 </script>
 
 <template>
     <!-- <pre>
             {{ userData }}
-        </pre> -->
+    </pre>
+
+    <pre>
+        {{ friendRequest }}
+    </pre> -->
     <main class="container max-w-2xl mx-auto space-y-8 mt-8 px-2 min-h-screen">
         <!-- Cover Container -->
         <section
@@ -119,23 +131,21 @@ function unfriendThisUser() {
             <!-- /Profile Stats -->
 
             <!-- Edit Profile Button (Only visible to the profile owner) -->
-            <Link v-if="userData.user_name == user.user_name" :href="route('user.profile.edit')"
-                class="-m-2 flex gap-2 items-center rounded-full px-4 py-2 font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-            </svg>
-
-            Edit Profile
+            <Link v-if="userData.user_name == user.user_name" :href="route('user.profile.edit')" class="-m-2 flex gap-2 items-center rounded-full px-4 py-2 font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                </svg>
+                Edit Profile
             </Link>
             <!-- /Edit Profile Button -->
 
             <template v-if="userData.user_name != user.user_name">
-                <!-- Actions Buttons Before accepting-->
-                <div v-if="userData.sent_friend_request_data != null && userData.sent_friend_request_data.status !== 'Accepted'"
+                <!-- Actions Buttons Before accepting (Request Receiver End - Accept - Reject)-->
+                <div v-if="userData.sent_friend_request_data != null && userData.sent_friend_request_data.status !== 'accepted'"
                     class="inline-flex rounded-md shadow-sm" role="group">
-                    <button @click.prevent="acceptFriendRequest"
+                    <button @click.prevent="friendRequest.accept"
                         class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700  dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="size-4 mr-1">
@@ -144,7 +154,7 @@ function unfriendThisUser() {
                         </svg>
                         Accept
                     </button>
-                    <button @click.prevent="rejectFriendRequest"
+                    <button @click.prevent="friendRequest.reject"
                         class="inline-flex items-center px-4 py-2 text-sm font-medium border-r-2 rounded-e-lg text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700  dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="size-4 mr-1">
@@ -166,9 +176,8 @@ function unfriendThisUser() {
                     </button>  -->
                 </div>
 
-                <!-- Actions buttons at pending status -->
-                <div
-                    v-if="userData.received_friend_request_data != null && userData.received_friend_request_data.status === 'Pending'">
+                <!-- Actions buttons at pending status (Request Sender End View - Pending - Withdraw) -->
+                <div v-if="userData.received_friend_request_data !== null && userData.received_friend_request_data.status === 'pending'">
                     <div class="inline-flex rounded-md shadow-sm" role="group">
                         <button type="button"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg   dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
@@ -181,7 +190,7 @@ function unfriendThisUser() {
                         </button>
 
 
-                        <button @click.prevent="withdrawFriendRequest"
+                        <button @click.prevent="friendRequest.toggle"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700  dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="size-4 mr-1">
@@ -194,7 +203,7 @@ function unfriendThisUser() {
                 </div>
 
                 <!-- Actions buttons after accepting -->
-                <div v-if="userData.is_my_friend != null && userData.is_my_friend === true">
+                <div v-if="friendRequest.status === 'accepted'">
                     <div class="inline-flex rounded-md shadow-sm" role="group">
                         <button type="button"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg   dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700">
@@ -207,7 +216,7 @@ function unfriendThisUser() {
                         </button>
 
 
-                        <button @click.prevent="unfriendThisUser"
+                        <button @click.prevent="friendRequest.unfriendThisUser"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700  dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="size-4 mr-1">
@@ -219,10 +228,10 @@ function unfriendThisUser() {
                     </div>
                 </div>
 
-                <!-- Sent Friend request -->
-                <div v-if="(!userData.sent_friend_request_data && !userData.received_friend_request_data)">
+                <!-- Sent Friend request - Default -->
+                <div v-if="!userData.sent_friend_request_data && !userData.received_friend_request_data">
                     <div class="inline-flex rounded-md shadow-sm" role="group">
-                        <button type="button" @click.prevent="toggleFriendRequest"
+                        <button type="button" @click.prevent="friendRequest.toggle"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg rounded-e-lg   dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="size-3.5 mr-1">

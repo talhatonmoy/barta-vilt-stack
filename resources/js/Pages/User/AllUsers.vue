@@ -9,10 +9,6 @@ const filterableUserDetails = props.filterableUserDetails;
 
 const allUsers = ref(props.allUsers.data);
 
-watch(usePage().props.allUsers.data, (newvalue) => {
-    console.log(newvalue);
-})
-
 const initialUrl = usePage().url
 const nextPageUrl = ref(props.allUsers.links.next)
 
@@ -59,13 +55,6 @@ onMounted(() => {
 const filterMechanism = reactive({
     form: {},
     performSearch() {
-        // this.form.get(route('users.list'), {
-        //     data: {
-        //         city: this.form.city,
-        //         gender: this.form.gender,
-        //         primaryLang: this.form.primaryLang
-        //     },
-        // })
         router.visit(route('users.list'),
             {
                 method: 'get',
@@ -76,15 +65,17 @@ const filterMechanism = reactive({
                 },
                 preserveState: true,
                 onSuccess: (page) => {
-                    // Update allUsers with filtered data
                     allUsers.value = page.props.allUsers.data;
-                    // Update next page URL as well
                     nextPageUrl.value = page.props.allUsers.links.next; 
                 }
             }
         )
     },
     reset() {
+        // Checking if the form object is empty or not
+        if ( (Object.keys(this.form)).length == 0) {
+            return;
+        }
         router.visit(route('users.list'))
     }
 
@@ -107,10 +98,13 @@ const filterMechanism = reactive({
             </div>
             <!-- Content Area -->
             <div class=" w-full md:w-8/12 lg:w-9/12">
-                <div class=" grid grid-flow-rows md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div v-if="allUsers.length > 0" class=" grid grid-flow-rows md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <template v-for="user in allUsers" :key="user.id">
                         <UserCard :userData="user" />
                     </template>
+                </div>
+                <div v-else class="main-border py-5 text-center">
+                    <p>No Users found to matched your filter</p>
                 </div>
                 <!-- Load More -->
                 <div ref="landMark"></div>

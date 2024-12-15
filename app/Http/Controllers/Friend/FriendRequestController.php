@@ -12,7 +12,7 @@ use App\Notifications\Friend\FriendRequestSent;
 
 class FriendRequestController extends Controller
 {
-    public function toggleFriendRequest(User $user){
+    public function toggleFriendRequest(User $user, bool $is_api = false){
         $receiver = $user;
 
         $existingRequest = FriendRequests::where('sender_id', auth()->id())
@@ -21,22 +21,26 @@ class FriendRequestController extends Controller
 
         if($existingRequest){
             $existingRequest->delete();
+            // Sending response if it is axios call
+            if ($is_api == true)  return response()->json(['status' => 'add friend']);
         }else{
             $friendRequest = FriendRequests::create([
                 'sender_id' => auth()->id(),
                 'receiver_id' => $receiver->id,
                 'status' => 'pending'
             ]);
-            // return response()->json(['status' => $friendRequest->status]);
             // Notify Receiver
             $receiver->notify(new FriendRequestSent());
+
+            // Sending response if it is axios call
+            if ($is_api == true) return response()->json(['status' => $friendRequest->status]);
         }
     }
 
     public function acceptFriendRequest(FriendRequests $friend_requests){
        $friendRequestData = $friend_requests;
-       // Authorizing
-       if($friendRequestData->receiver_id != auth()->id()){
+    //    Authorizing
+       if($friendRequestData->receiver_id !== auth()->id()){
         return;
        }
 

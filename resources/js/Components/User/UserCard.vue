@@ -5,24 +5,20 @@ import axios from 'axios';
 
 const props = defineProps({
     userData: {
-            type: Object
-        }
+        type: Object
+    }
 })
 
 const userData = reactive(props.userData)
 
-const friendRequestStatus = ref('Add Friend');
+const friendRequestStatus = ref((userData.received_friend_request_data) ? userData.received_friend_request_data.status : 'Add Friend');
 
 async function toggleFriendRequest() {
-    // const response = await axios.post(route('friend.request.toggle', userData.user_name))
-    // console.log(response.data.status);
-    router.visit(route('friend.request.toggle', userData.user_name), {
-        method: 'post',
-        preserveScroll: true,
-        onSuccess: (page) => {
-            // console.log(page.props.allUsers.data)
-        }
-    })
+    const response = await axios.post(route('friend.request.toggle', [userData.user_name, true]))
+    if (response.data.status == 'pending') {
+        friendRequestStatus.value = response.data.status
+    }
+    friendRequestStatus.value = response.data.status
 }
 
 function acceptFriendRequest() {
@@ -44,14 +40,14 @@ function acceptFriendRequest() {
                 <!-- Confirm Friend Request -->
                 <div v-if="!userData.is_my_friend">
                     <button @click.prevent="acceptFriendRequest"
-                        v-if="userData.sent_friend_request_data && userData.sent_friend_request_data.status === 'Pending'"
+                        v-if="userData.sent_friend_request_data && userData.sent_friend_request_data.status === 'pending'"
                         class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-md hover:bg-blue-800  focus:outline-none  dark1:bg-blue-600 dark1:hover:bg-blue-700 ">
                         Confirm
                     </button>
 
                     <button v-else @click.prevent="toggleFriendRequest"
-                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-md hover:bg-blue-800  focus:outline-none  dark1:bg-blue-600 dark1:hover:bg-blue-700 ">
-                        {{ (userData.received_friend_request_data) ? userData.received_friend_request_data.status : 'Add Friend' }}
+                        class="inline-flex items-center px-4 capitalize py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-md hover:bg-blue-800  focus:outline-none  dark1:bg-blue-600 dark1:hover:bg-blue-700 ">
+                        {{ friendRequestStatus }}
                     </button>
                 </div>
 
@@ -62,13 +58,11 @@ function acceptFriendRequest() {
                 </Link>
             </div>
         </div>
-        <pre class="text-xs">
+        <!-- <pre class="text-xs">
             {{ userData }}
-        </pre>
+        </pre> -->
     </div>
 
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
