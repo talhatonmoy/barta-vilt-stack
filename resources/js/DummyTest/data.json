@@ -1,45 +1,33 @@
 {
-    "uuid": "f1b30428-8b84-47c7-bc06-e721a3d3f562",
-    "excerpt": "Hello Everyone",
-    "comments_count": 0,
-    "postImages": [
+    "id": 1,
+    "first_name": "Talha",
+    "last_name": "Tonmoy",
+    "user_name": "talha",
+    "bio": "I design websites that drive leads & sales for Coaches & Business Owners | Web Designer | WordPress | Website Development | UI/UX",
+    "email": "atton53@gmail.com",
+    "profileImgUrl": "http://localhost:8000/storage/3/Linkeidn-Profile-image-less-then-500kb.png",
+    "is_my_friend": false,
+    "friends": [
         {
-            "file_name": "WhatsApp-Image-2024-10-22-at-21.42.58.jpeg",
-            "url": "http://localhost:8000/storage/72/WhatsApp-Image-2024-10-22-at-21.42.58.jpeg"
-        }
-    ],
-    "user": {
-        "first_name": "Arsalan",
-        "last_name": "Islam",
-        "user_name": "arsalan",
-        "bio": null,
-        "profileImgUrl": "http://localhost:8000/storage/70/dummy-customer.jpg"
-    },
-    "likes": [
-        {
-            "id": 1,
-            "likeable_type": "App\\Models\\Post",
-            "likeable_id": 59,
-            "is_like": 1,
-            "user": {
-                "first_name": "Talha",
-                "last_name": "Tonmoy",
-                "user_name": "atton53",
-                "bio": "Full Stack VILT Web Application Developer",
-                "profileImgUrl": "http://localhost:8000/storage/75/Talha's-Email-Signature-(3).jpg"
+            "id": 2,
+            "first_name": "Donald",
+            "last_name": "Trump",
+            "profileImgUrl": "http://localhost:8000/storage/5/Screenshot-2024-12-12-at-10.04.52 PM.png",
+            "latestMessage": {
+                "body": "Hello Talha",
+                "created_at": "6 hours ago",
+                "read_at": null
             }
         },
         {
-            "id": 2,
-            "likeable_type": "App\\Models\\Post",
-            "likeable_id": 59,
-            "is_like": 1,
-            "user": {
-                "first_name": "Arsalan",
-                "last_name": "Islam",
-                "user_name": "arsalan",
-                "bio": null,
-                "profileImgUrl": "http://localhost:8000/storage/70/dummy-customer.jpg"
+            "id": 201,
+            "first_name": "Tanvir",
+            "last_name": "Ahmed",
+            "profileImgUrl": "http://localhost:8000/storage/6/dummy-customer.jpg",
+            "latestMessage": {
+                "body": "I am fine my friend",
+                "created_at": "7 hours ago",
+                "read_at": null
             }
         }
     ]

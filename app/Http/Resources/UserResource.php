@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Helpers\MediaCollection;
 use App\Http\Resources\Friend\FriendRequestResource;
+use App\Http\Resources\Messenger\FriendResource;
 use App\Http\Resources\Post\PostResourceForUserProfilePage;
 use App\Http\Resources\User\UserDetailsResource;
 use Illuminate\Http\Request;
@@ -51,7 +52,7 @@ class UserResource extends JsonResource
         
             'is_my_friend' => $this->isMyFriend(),
 
-            // 'friends' => $this->whenLoaded('friends')
+            'friends' => FriendResource::collection($this->whenLoaded('friends'))
 
         ];
     }
@@ -75,8 +76,6 @@ class UserResource extends JsonResource
             if ($this->sentFriendRequests->contains('receiver_id', auth()->id())) {
                 $friendRequest = $this->sentFriendRequests->where('receiver_id', auth()->id())->firstOrFail();
                 return FriendRequestResource::make($friendRequest);
-                // if($friendRequest->status !== 'accepted'){
-                // }
             }
         });
         
@@ -92,8 +91,6 @@ class UserResource extends JsonResource
             if ($this->receivedFriendRequests->contains('sender_id', auth()->id())) {
                 $friendRequest = $this->receivedFriendRequests->where('sender_id', auth()->id())->firstOrFail();
                 return FriendRequestResource::make($friendRequest);
-                // if ($friendRequest->status !== 'accepted') {
-                // }
             }
         });
         

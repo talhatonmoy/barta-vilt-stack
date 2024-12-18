@@ -1,10 +1,14 @@
 // Import necessary functions and libraries from Vue and Inertia
-// import './bootstrap';
+import './bootstrap';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'; // Ziggy for route handling
 import NProgress from 'nprogress'; // Progress bar library
 import { router } from '@inertiajs/vue3'; // Inertia router
+import { createPinia } from 'pinia';
+
+
+const pinia = createPinia();
 
 
 // Importing my custom directive 
@@ -32,6 +36,9 @@ createInertiaApp({
 
         // Use Inertia plugin for handling navigation and state management
         app.use(plugin);
+
+        // State Manager
+        app.use(pinia);
 
         // Use ZiggyVue for route management based on Laravel routes
         app.use(ZiggyVue);

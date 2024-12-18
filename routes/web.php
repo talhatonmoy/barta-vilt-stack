@@ -79,7 +79,10 @@ Route::middleware('auth')->group(function(){
     Route::resource('comments', CommentController::class);
 
     // Messenger
-    Route::get('/messenger', [MessageController::class, 'indexMessage'])->name('message.index');
+    Route::get('/messenger', [MessageController::class, 'messenger'])->name('messenger');
+    Route::get('/messenger/{user:user_name}', [MessageController::class, 'indexMessage'])->name('message.index');
+    Route::get('/messenger/loadMessages/{user:user_name}', [MessageController::class, 'loadMessage'])->name('message.load');
+    Route::post('/messenger/{user:user_name}', [MessageController::class, 'storeMessage'])->name('message.store');
 
 
     // User Notifications
@@ -94,14 +97,14 @@ Route::middleware('auth')->group(function(){
     /**
      * Routes related to friends
      */
-    // Friend request sent
-    // Route::post('friend-requests/{user:user_name}', [FriendRequestController::class, 'toggleFriendRequest'])->name('friend.request.toggle');
     Route::post('friend-requests/{user:user_name}/api/{is_api?}', [FriendRequestController::class, 'toggleFriendRequest'])->name('friend.request.toggle');
     Route::post('friend-requests/{friend_requests}/accept', [FriendRequestController::class, 'acceptFriendRequest'])->name('friend.request.accept');
     Route::post('friend-requests/{friend_requests}/reject', [FriendRequestController::class, 'rejectFriendRequest'])->name('friend.request.reject');
     
     // Unfriend a user
     Route::post('friend/{friend_requests}/unfriend', [FriendRequestController::class, 'unfriend'])->name('unfriend');
+
+
 
     // Logout user
     Route::get('logout', [UserAuthController::class, 'logout'])->name('user.logout');

@@ -39,9 +39,9 @@ const userAccountMenu = reactive({
                 <!-- Left Part -->
                 <div class="flex">
                     <div class="flex flex-shrink-0 items-center">
-                        <a>
+                        <Link :href="route('user.timeline')">
                             <h2 class="font-bold text-2xl">Barta</h2>
-                        </a>
+                        </Link>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                         <!-- Left Side Desktop Menu Items -->
@@ -83,7 +83,7 @@ const userAccountMenu = reactive({
                     <!-- Notification -->
                     <InAppNotificationTray />
                     <!-- Message -->
-                    <Link :href="route('message.index')" class="rounded-full text-gray-800">
+                    <Link :href="route('messenger')" class="rounded-full text-gray-800">
                         <span class="sr-only">Messages</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-5 sm:size-6">
