@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Models\Post;
 use App\Helpers\MediaCollection;
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Notifications\Notifiable;
@@ -79,5 +80,81 @@ class User extends Authenticatable implements HasMedia
         $this->addMediaCollection(MediaCollection::UserProfileImage)
             ->useFallbackUrl('/img/placeholders/profile.jpg')
             ->singleFile();
+    }
+
+    /**
+     * Relationships related to friends
+     */
+    
+     //Friend requests a user has sent so far - SELECT * FROM friend_requests WHERE sender_id = 1;
+     public function sentFriendRequests(){
+        return $this->hasMany(FriendRequests::class, 'sender_id');
+     }
+
+    //Friend requests a user has received so far - SELECT * FROM friend_requests WHERE receiver_id = 1;
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(FriendRequests::class, 'receiver_id');
+    }
+
+    /**
+     * This method retrieves all users who are friends with the current user
+     * friendsOf: This method retrieves all users who are friends of the current user. 
+     * In other words, it finds users that consider the current user as their friend.
+     */
+    public function friendsOf(){
+        return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id');
+    }
+
+    /**
+     * This method retrieves all users that - the current user has as friends.
+     * This method retrieves all users that the current user considers as friends. 
+     * Essentially, it looks for users that the current user has sent friend requests to and have accepted them.
+     */
+    public function friends(){
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id');
+    }
+
+    // All friends
+    public function allFriends() {
+        return $this->friends->merge($this->friendsOf());
+    }
+
+    // Mutual friends
+    public function mutualFriends(User $otherUser){
+        $loggedinUserFriendIds  = $this->allFriends()->pluck('id')->toArray();
+        $otherUserFriendIds = $otherUser->allFriends()->pluck('id')->toArray();
+
+        $mutualFriendIds = array_intersect($loggedinUserFriendIds, $otherUserFriendIds);
+        return User::whereIn('id', $mutualFriendIds)->get();
+    }
+    
+    /**
+     * Messages
+     */
+    public function messagesSentByThisUser(){
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    // This will return all messages where the receiver_id matches the ID of $user. 
+    public function messagesReceivedByThisUser()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+
+    // Recent
+
+    public function recentMessagesSentByThisUser()
+    {
+        return $this->hasMany(Message::class, 'sender_id')
+        ->where('receiver_id', auth()->id())
+        ->latest()->take(1);
+    }
+    public function recentMessagesReceivedByThisUser()
+    {
+        return $this->hasMany(Message::class, 'receiver_id')
+            ->where('receiver_id', auth()->id())
+            ->latest()->take(1);
     }
 }

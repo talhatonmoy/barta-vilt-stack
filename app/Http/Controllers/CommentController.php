@@ -48,7 +48,6 @@ class CommentController extends Controller
         if($comment->post->user_id != auth()->id()){
             Notification::send($comment->post->user, new NewComment($comment));
         }
-
         return back();
     }
 

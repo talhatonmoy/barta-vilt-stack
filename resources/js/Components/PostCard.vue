@@ -38,7 +38,7 @@ function handlePostDelete() {
     <!-- <pre>
         {{ props.post }}
     </pre> -->
-    <article class="bg-white border-2 border-black rounded-lg shadow mx-auto max-w-none px-4 py-5 sm:px-6">
+    <article class="main-border  rounded-lg  mx-auto max-w-none px-4 py-5 sm:px-6">
         <!-- Barta Card Top -->
         <header>
             <div class="flex items-center justify-between">
@@ -127,8 +127,8 @@ function handlePostDelete() {
         <!-- Date Created & View Stat -->
         <div class="flex items-center gap-2 text-gray-500 text-xs my-2">
             <span class="">{{ props.post.last_modified_time }}</span>
-            <span class="">•</span>
-            <span>4,450 views</span>
+            <!-- <span class="">•</span>
+            <span>4,450 views</span> -->
         </div>
 
         <!-- Barta Card Bottom -->
@@ -156,7 +156,7 @@ function handlePostDelete() {
                 </div>
 
                 <!-- Share -->
-                <div>
+                <!-- <div>
                     <div
                         class="-m-2 flex gap-2 text-xs items-center rounded-full p-2 text-gray-600 hover:text-gray-800">
                         <span class="sr-only">Share</span>
@@ -169,7 +169,7 @@ function handlePostDelete() {
                         <p>21</p>
 
                     </div>
-                </div>
+                </div> -->
             </div>
             <!-- /Card Bottom Action Buttons -->
         </footer>

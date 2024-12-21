@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use App\Helpers\MediaCollection;
 use App\Helpers\ReusableHelpers;
+use App\Http\Resources\UserResource;
 
 class UserService{
 
@@ -32,13 +33,11 @@ class UserService{
     public function getAuthenticatedUserData()
     {
         if (auth()->id()) {
-            $userData = User::withCount('comments', 'posts')
-                ->find(auth()->id());
-
-            $userData['profileImgUrl'] = $userData->getFirstMediaUrl(MediaCollection::UserProfileImage);
-            // Unset the 'media' relationship to exclude it entirely
-            unset($userData->media);
-            return $userData;
+            $userData = User::with('media')
+                ->withCount('comments', 'posts')
+                ->find(auth()->id()); 
+            return UserResource::make($userData);
+            // return $userData;
         }
         return null;
     }

@@ -51,6 +51,7 @@ class NewComment extends Notification
     {
         return [
             'post_link' => route('posts.show', $this->comment->post_uuid),
+            'type' => 'newComment',
             'message' => 'Commented on your post',
             'sender' => UserResource::make(auth()->user())
         ];

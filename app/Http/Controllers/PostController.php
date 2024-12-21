@@ -45,7 +45,8 @@ class PostController extends Controller
                 $post->addMedia($image)->toMediaCollection(MediaCollection::PostImage);
             }
         }
-        return redirect()->route('user.timeline');
+        // return redirect()->route('user.timeline');
+        return to_route('user.timeline');
     }
 
     /**

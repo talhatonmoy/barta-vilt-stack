@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewUserRegistered;
-use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\UserDetail;
 use Illuminate\Support\Str;
 use App\Services\UserService;
 use App\Helpers\MediaCollection;
-use App\Helpers\ReusableHelpers;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\UserResource;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Http\Resources\Post\PostResourceForUserProfilePage;
-use App\Http\Resources\UserResource;
 use App\Services\PostCardComponentService;
+use App\Http\Requests\UserSearchFilterRequest;
+use App\Http\Resources\Post\PostResourceForUserProfilePage;
 
 class UserController extends Controller
 {
@@ -34,10 +34,9 @@ class UserController extends Controller
     public function userStore(UserStoreRequest $request){
         $user = $this->userService->store($request);
 
-        event(new NewUserRegistered($user));
+        // event(new NewUserRegistered($user));
         
         return redirect()->route('user.timeline');
-
 
     }
 
@@ -45,7 +44,8 @@ class UserController extends Controller
     public function userProfileShow(User $user){
 
         $userPosts = $user->posts()->paginate(10);
-        $user->loadCount('comments', 'posts');
+        $user->loadCount(['comments', 'posts', 'friends']);
+        $user->load(['sentFriendRequests', 'receivedFriendRequests']);
 
         return Inertia::render('User/UserProfile', [
             'userData' => UserResource::make($user),
@@ -74,5 +74,51 @@ class UserController extends Controller
             $user->addMedia($request->file('profileImg'))->toMediaCollection(MediaCollection::UserProfileImage);
         }
         return redirect()->route('user.profile.show', $user->user_name);
+    }
+
+    // List All Users
+    public function listAllUsers(UserSearchFilterRequest $request){
+
+        $searchData = $request->validated();
+        // dd($searchData);
+  
+        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
+                        ->when($searchData['search'] ?? false, function($query) use ($searchData){
+                            return $query->whereAny([
+                                'first_name',
+                                'last_name'
+                            ], 'LIKE', "%" . $searchData['search']. "%");
+                        })
+                        ->when($searchData['city'] ?? false, function($query) use ($searchData){
+                            // Checking at (hasOne - user_details related table)
+                            return $query->whereHas('user_details', function($query) use ($searchData){
+                                 $query->where('current_city' , $searchData['city']);
+                            });
+                        })
+                        ->when($searchData['gender'] ?? false, function ($query) use ($searchData) {
+                            // Checking at (hasOne - user_details related table)
+                            return $query->whereHas('user_details', function($query) use ($searchData){
+                                $query->where('gender', $searchData['gender']);
+                            });
+                        })
+                        ->when($searchData['primaryLang'] ?? false, function ($query) use ($searchData) {
+                            // Checking at (hasOne - user_details related table)
+                            return $query->whereHas('user_details', function($query) use ($searchData){
+                                $query->where('primary_lang', $searchData['primaryLang']);
+                            });
+                        })
+                        ->where('id', '!=' , auth()->id())
+                        ->paginate(12)
+                        ->withQueryString();
+// dd($allUsers);
+
+        $filterableUserDetails = [];
+        $filterableUserDetails['uniqueCities'] = UserDetail::whereNotNull('current_city')->distinct()->pluck('current_city');
+        $filterableUserDetails['primaryLang'] = UserDetail::whereNotNull('primary_lang')->distinct()->pluck('primary_lang');
+
+        return Inertia::render('User/AllUsers', [
+            'allUsers' => UserResource::collection($allUsers),
+            'filterableUserDetails' => $filterableUserDetails,
+        ]);
     }
 }
