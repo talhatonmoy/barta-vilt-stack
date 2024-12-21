@@ -4,20 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Events\NewMessageCreated;
 use App\Http\Requests\MessageStoreRequest;
-use App\Http\Resources\Messenger\FriendResource;
 use App\Http\Resources\Messenger\FriendResourceForMessengerSidebar;
 use App\Http\Resources\Messenger\MessageResource;
-use App\Http\Resources\Messenger\UserResourceForMessengerSidebar;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Message;
-use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Friendship;
 
 class MessageController extends Controller
 {
-
     // For Messenger UI
     public function messenger(){
         $friendsWithLastConversationMessage = request()->user()->load([
@@ -29,6 +25,7 @@ class MessageController extends Controller
             'friendsWithLastConversationMessage' => FriendResourceForMessengerSidebar::collection($friendsWithLastConversationMessage)
         ]);
     }
+    
 
     // For individual User Message UI
     public function indexMessage(User $user){
@@ -57,13 +54,20 @@ class MessageController extends Controller
     }
 
     public function storeMessage( MessageStoreRequest $request,User $user){
-        $receiver = $user;
         $validatedData = $request->validated();
+
+        $friend = $user;
+        $friend->recentMessagesSentByThisUser()->update([
+            'read_at' => now()
+        ]);
+
         $message = Message::create([
             'sender_id' => auth()->id(),
-            'receiver_id' => $receiver->id,
+            'receiver_id' => $friend->id,
             'body' => $validatedData['body'],
         ]);
+
+       
 
         // BroadCasting Message
         broadcast(new NewMessageCreated($message));

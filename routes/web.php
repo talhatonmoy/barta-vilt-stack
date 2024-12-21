@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Friend\FriendRequestController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Notification\NotificationController;
+use App\Http\Middleware\Messenger\HasFriendship;
 
 /**
  * Open routes
@@ -80,13 +81,18 @@ Route::middleware('auth')->group(function(){
 
     // Messenger
     Route::get('/messenger', [MessageController::class, 'messenger'])->name('messenger');
-    Route::get('/messenger/{user:user_name}', [MessageController::class, 'indexMessage'])->name('message.index');
+
+    Route::get('/messenger/{user:user_name}', [MessageController::class, 'indexMessage'])
+    ->middleware(HasFriendship::class)
+    ->name('message.index');
+
     Route::get('/messenger/loadMessages/{user:user_name}', [MessageController::class, 'loadMessage'])->name('message.load');
     Route::post('/messenger/{user:user_name}', [MessageController::class, 'storeMessage'])->name('message.store');
 
 
     // User Notifications
     Route::get('/notifications', [NotificationController::class, 'allNotifications'])->name('user.notifications');
+    Route::get('/lastFewNotifications', [NotificationController::class, 'lastFewNotification'])->name('user.notifications.few');
     
     // Notifications Tray (for returning unread notifications only)
     Route::get('/notifications/tray', [NotificationController::class, 'notificationTray'])->name('user.notifications.tray');

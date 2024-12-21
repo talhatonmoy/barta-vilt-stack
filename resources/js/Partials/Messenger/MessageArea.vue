@@ -1,8 +1,10 @@
 <script setup>
 import ChatInputArea from './ChatInputArea.vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Link } from '@inertiajs/vue3';
 import { useMessengerUserStore } from '../../Store/useMessengerUserStore';
+import { useMessengerLeftFriendWithLatestMessageStore } from '../../Store/useMessengerLeftFriendWithLatestMessageStore';
 
+const friendsWithLastConversationMessage = useMessengerLeftFriendWithLatestMessageStore();
 const messengerStore = useMessengerUserStore()
 
 const authUser = usePage().props.auth.user
@@ -20,14 +22,18 @@ const authUser = usePage().props.auth.user
             <!-- Top Section -->
             <div class="chat-header px-5 py-3 flex flex-row flex-none justify-between items-center shadow">
                 <div class="flex items-center">
-                    <div class="w-12 h-12 mr-4 relative flex flex-shrink-0">
-                        <img class="shadow-md rounded-full w-full h-full object-cover" :src="messengerStore.friendData.profileImgUrl"
-                            :alt="messengerStore.friendData.user_name" />
-                    </div>
+                    <Link :href="route('user.profile.show', messengerStore.friendData.user_name)">
+                        <div class="w-12 h-12 mr-4 relative flex flex-shrink-0">
+                            <img class="shadow-md rounded-full w-full h-full object-cover"
+                                :src="messengerStore.friendData.profileImgUrl" :alt="messengerStore.friendData.user_name" />
+                        </div>
+                    </Link>
                     <div class="text-sm">
-                        <p class="font-bold">{{ messengerStore.friendData.first_name }} {{ messengerStore.friendData.last_name }}</p>
+                        <Link :href="route('user.profile.show', messengerStore.friendData.user_name)">
+                        <p class="font-bold">{{ messengerStore.friendData.first_name }} {{
+                            messengerStore.friendData.last_name }}</p>
+                        </Link>
                         <p>Active 1h ago</p>
-
                     </div>
                 </div>
             </div>
@@ -75,11 +81,12 @@ const authUser = usePage().props.auth.user
                                         }}</span>
                                 </div>
                                 <p class="text-sm font-normal py-2.5 text-gray-900 dark1:text-white">{{ msg.body }}</p>
-                                <!-- <span class="text-sm font-normal text-gray-500 dark1:text-gray-400">Delivered</span> -->
+                                <!-- <span v-if="msg.read_at" class="text-sm font-normal text-gray-500 dark1:text-gray-400">Seen {{ msg.read_at }}</span> -->
                             </div>
                         </div>
                     </template>
-                    <button v-if="messengerStore.next" @click.prevent="messengerStore.loadPreviousMessages">Load More</button>
+                    <button v-if="messengerStore.next" @click.prevent="messengerStore.loadPreviousMessages">Load
+                        More</button>
                 </template>
 
 

@@ -17,6 +17,14 @@ class NotificationController extends Controller
         return Inertia::render('Notifications/AllNotifications', compact('userNotifications'));
     }
 
+    // For All notifications page
+    public function lastFewNotification()
+    {
+        $allNotifications = auth()->user()->notifications;
+        $latFewNotifications = NotificationResource::collection(auth()->user()->notifications->take(7));
+        return $latFewNotifications;
+    }
+
     // For notifications tray
     public function notificationTray(){
         $user  = auth()->user();

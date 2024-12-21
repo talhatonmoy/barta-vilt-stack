@@ -38,7 +38,6 @@ class UserController extends Controller
         
         return redirect()->route('user.timeline');
 
-
     }
 
     //Show 
@@ -81,8 +80,15 @@ class UserController extends Controller
     public function listAllUsers(UserSearchFilterRequest $request){
 
         $searchData = $request->validated();
+        // dd($searchData);
   
         $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
+                        ->when($searchData['search'] ?? false, function($query) use ($searchData){
+                            return $query->whereAny([
+                                'first_name',
+                                'last_name'
+                            ], 'LIKE', "%" . $searchData['search']. "%");
+                        })
                         ->when($searchData['city'] ?? false, function($query) use ($searchData){
                             // Checking at (hasOne - user_details related table)
                             return $query->whereHas('user_details', function($query) use ($searchData){
@@ -104,7 +110,7 @@ class UserController extends Controller
                         ->where('id', '!=' , auth()->id())
                         ->paginate(12)
                         ->withQueryString();
-
+// dd($allUsers);
 
         $filterableUserDetails = [];
         $filterableUserDetails['uniqueCities'] = UserDetail::whereNotNull('current_city')->distinct()->pluck('current_city');

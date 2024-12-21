@@ -48,14 +48,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex max-w-7xl gap-6 mx-auto px-4 pt-8 sm:px-6 lg:px-8">
+    <div class="flex max-w-7xl gap-6 md:gap-3 mx-auto px-4 pt-8 sm:px-6 lg:px-8">
         <!-- Left part -->
-        <div class=" hidden lg:block  w-3/12">
+        <div class=" hidden md:block lg:block  w-3/12">
             <LeftUserOverview :userData="userData" class="sticky top-24" />
         </div>
 
         <!-- Main section -->
-        <div class="container md:w-8/12 lg:w-6/12 max-w-7xl mx-auto space-y-8 min-h-screen">
+        <div class="container md:w-9/12 lg:w-6/12 max-w-7xl mx-auto space-y-8 min-h-screen">
             <main class="container mx-auto space-y-5 min-h-screen">
                 <!-- Create Post Card -->
                 <CreatePostCard rows="2" />

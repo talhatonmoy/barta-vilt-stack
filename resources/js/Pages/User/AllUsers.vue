@@ -59,9 +59,10 @@ const filterMechanism = reactive({
             {
                 method: 'get',
                 data: {
+                    search: this.form.search,
                     city: this.form.city,
                     gender: this.form.gender,
-                    primaryLang: this.form.primaryLang
+                    primaryLang: this.form.primaryLang,
                 },
                 preserveState: true,
                 onSuccess: (page) => {

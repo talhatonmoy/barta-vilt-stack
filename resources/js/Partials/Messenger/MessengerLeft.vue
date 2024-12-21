@@ -1,6 +1,8 @@
 <script setup>
 import { usePage, Link } from '@inertiajs/vue3';
+import { useMessengerUserStore } from '../../Store/useMessengerUserStore';
 
+const messengerStore = useMessengerUserStore()
 
 const props = defineProps({
     friends: {
@@ -15,10 +17,20 @@ const authUser = usePage().props.auth.user
 <template>
     <section
         class="flex flex-col flex-none overflow-auto w-24 group lg:max-w-sm md:w-2/5 transition-all duration-100 ease-in-out">
-
+        <!-- <pre>
+        {{ friends }}
+    </pre> -->
         <!-- Head Section -->
-        <div class="header p-4">
-            <h2 class="text-2xl font-bold">Chats</h2>
+        <div class="header p-4 flex gap-4 items-center">
+            <!-- Image -->
+            <div class="w-14 h-14 relative flex justify-center ring-1 p-0.5 rounded-full">
+                <img class="shadow-md rounded-full w-full h-full object-cover" :src="authUser.profileImgUrl"
+                    :alt="authUser.user_name" />
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold leading-0">Chats</h2>
+                <p class="font-medium leading-0 text-gray-500">{{ authUser.first_name }} {{ authUser.last_name }}</p>
+            </div>
         </div>
 
         <!-- Search Form -->
@@ -44,8 +56,9 @@ const authUser = usePage().props.auth.user
         <!-- Users -->
         <div class="contacts p-2 overflow-y-auto">
             <!-- User -->
-            <template v-for="friend in friends" :key="friend.id">
-                <Link preserve-scroll :href="route('message.index', friend.user_name)">
+            <template v-if="friends.length">
+                <template v-for="friend in friends" :key="friend.id">
+                    <Link preserve-scroll :href="route('message.index', friend.user_name)">
                     <div
                         class="flex justify-center md:justify-between gap-3 items-center p-3 hover:bg-gray-100 rounded-lg relative">
                         <!-- Image -->
@@ -54,18 +67,31 @@ const authUser = usePage().props.auth.user
                                 :alt="friend.user_name" />
                         </div>
                         <!-- Short Message -->
-                        <div class="flex-auto min-w-0 hidden md:block ">
-                            <p class="text-sm font-medium md:text-md">{{ friend.first_name }} {{ friend.last_name }}<span
-                                    class="text-xs ml-1 font-bold"> - {{ friend.latest_message.created_at }}</span></p>
+                        <div class="flex-auto min-w-0 hidden md:block">
+                            <p class="text-sm font-medium md:text-md">
+                                {{ friend.first_name }} {{ friend.last_name }}
+                                <span v-if="friend.latest_message" class="text-xs ml-1 font-bold"> - {{
+                                    friend.latest_message.created_at }}</span>
+                            </p>
                             <div class="flex items-center text-xs md:text-sm  text-gray-600">
                                 <div class="min-w-0">
-                                    <p class="truncate">{{ friend.latest_message.body }}</p>
+                                    <p v-if="friend.latest_message" class="truncate">
+                                        {{ friend.latest_message.body}}</p>
+                                    <p class="font-normal" v-else>start conversation</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </Link>
+                    </Link>
+                </template>
             </template>
+
+            <template v-else>
+                <div class="flex justify-center items-center h-64">
+                    <p class="text-gray-500">No friends found</p>
+                </div>
+            </template>
+
 
 
         </div>

@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, reactive, onMounted  } from 'vue';
 import PostLikeNotificationItem from './PostLikeNotificationItem.vue';
+import NewCommentNotificationItem from './NewCommentNotificationItem.vue';
 import FriendRequestSentNotificationItem from './FriendRequestSentNotificationItem.vue';
 const user = usePage().props.auth.user
 
@@ -10,19 +11,7 @@ const unreadNotifications = ref([]);
 const unreadNotificationCount = ref(0);
 
 onMounted(async () => {
-    // fetchUnreadNotifications()
-
-
-    // Echo.private(`App.Models.User.${user.id}`)
-    //     .notification((notification) => {
-    //         console.log(notification);
-    //     });
-
-    // Echo.private(`App.Models.User.2`)
-    //     .listen( 'TestEvent' ,(event) => {
-    //         console.log(event);
-    //     });
-   
+    fetchUnreadNotifications()
 })
 
 
@@ -100,9 +89,13 @@ function markAllNotificationAsRead() {
                         <!-- Post Like -->
                         <PostLikeNotificationItem v-if="notification.data.type === 'postLike'"
                             :notification="notification" />
-                        
+
                         <!-- Friend Request Sent -->
                         <FriendRequestSentNotificationItem v-if="notification.data.type === 'friendRequestSent'"
+                            :notification="notification" />
+
+                        <!-- New Comment -->
+                        <NewCommentNotificationItem v-if="notification.data.type === 'newComment'"
                             :notification="notification" />
                     </template>
 

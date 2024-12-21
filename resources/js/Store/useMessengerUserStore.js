@@ -1,5 +1,6 @@
 import axios from "axios";
 import { defineStore } from "pinia";
+import { useMessengerLeftFriendWithLatestMessageStore } from "./useMessengerLeftFriendWithLatestMessageStore";
 
 export const useMessengerUserStore = defineStore('messenger',{
     // State
@@ -8,8 +9,7 @@ export const useMessengerUserStore = defineStore('messenger',{
         friendData: null,
         page: 1,
         next: null,
-        // isRead: null,
-        latestMessageBySender: null
+        latestMessage: null
     }),
     
     // Getter
@@ -32,7 +32,7 @@ export const useMessengerUserStore = defineStore('messenger',{
             this.next = (response.data.links.next) ? response.data.links.next : null
             this.page = response.data.meta.current_page
             this.messages = [...this.messages, ...response.data.data]
-            // this.isRead();
+            
         },
 
         // Loading previous data
@@ -47,21 +47,25 @@ export const useMessengerUserStore = defineStore('messenger',{
 
         // Storing new message
         async storeMessage(payload) {
+
             const response = await axios.post(route('message.store', this.friendData.user_name), payload)
-            this.appendNewMessageToCurrentState(response.data)
+            this.appendNewMessageToCurrentState(response.data) // For message area
+            
+            // Updating Auth User End message state on sidebar
+            const friendsWithLatestMessageStore = useMessengerLeftFriendWithLatestMessageStore()
+            friendsWithLatestMessageStore.updateTheFriendWithLatestMessageOnAuthUserEnd(response.data)
         },
 
-        // Appending new message to current message state
+        // Appending new message to current message state (auth user end)
         appendNewMessageToCurrentState(newlyCreatedMessage) {
-            // this.messages.pop()
+            if (this.messages.length == 25) {
+                this.messages.pop()
+            }
             this.messages = [newlyCreatedMessage, ...this.messages]
+            this.latestMessage = newlyCreatedMessage
+
+            
         },
 
-        isRead() {
-            if (this.messages.length) {
-                const latestMessage = this.messages[0]
-                this.isRead = latestMessage.read_at
-            }
-        }
     }// End Action
 })

@@ -14,6 +14,7 @@ class MessageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd();
         return [
             'id' => $this->whenHas('id'),
             'sender_id' => $this->sender_id,

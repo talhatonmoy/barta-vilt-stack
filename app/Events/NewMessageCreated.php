@@ -36,7 +36,6 @@ class NewMessageCreated implements ShouldBroadcastNow
         return MessageResource::make($this->message)->toArray(request());
     }
 
-
     /**
      * Get the channels the event should broadcast on.
      *

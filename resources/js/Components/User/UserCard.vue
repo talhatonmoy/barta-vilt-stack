@@ -56,6 +56,11 @@ function acceptFriendRequest() {
                     class="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10   dark1:bg-gray-800 dark1:text-gray-400 dark1:border-gray-600 dark1:hover:text-white dark1:hover:bg-gray-700">
                 Profile
                 </Link>
+
+                <Link v-if="userData.is_my_friend" :href="route('message.index', userData.user_name)"
+                    class="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10   dark1:bg-gray-800 dark1:text-gray-400 dark1:border-gray-600 dark1:hover:text-white dark1:hover:bg-gray-700">
+                Message
+                </Link>
             </div>
         </div>
         <!-- <pre class="text-xs">

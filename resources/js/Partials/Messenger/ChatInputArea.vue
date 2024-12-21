@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+
 const emit = defineEmits()
 
 const message = ref('');

@@ -147,10 +147,14 @@ class User extends Authenticatable implements HasMedia
 
     public function recentMessagesSentByThisUser()
     {
-        return $this->hasMany(Message::class, 'sender_id')->latest()->take(1);
+        return $this->hasMany(Message::class, 'sender_id')
+        ->where('receiver_id', auth()->id())
+        ->latest()->take(1);
     }
     public function recentMessagesReceivedByThisUser()
     {
-        return $this->hasMany(Message::class, 'receiver_id')->latest()->take(1);
+        return $this->hasMany(Message::class, 'receiver_id')
+            ->where('receiver_id', auth()->id())
+            ->latest()->take(1);
     }
 }

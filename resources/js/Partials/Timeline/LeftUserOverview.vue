@@ -57,7 +57,7 @@ const props = defineProps({
                 </div>
 
                 <!-- Date of Birth -->
-                <div class="flex justify-between">
+                <div class="flex justify-between gap-3">
                     <p class="text-xs text-gray-700 ">
                         Date of birth
                     </p>
@@ -67,10 +67,10 @@ const props = defineProps({
                 </div>
 
                 <!-- Website -->
-                <div class="flex justify-between">
+                <div class="flex justify-between gap-3">
                     <p class="text-xs text-gray-700 ">Website</p>
                     <a :href="userData.user_details?.website" target="_blank"
-                        class="text-xs hover:underline cursor-pointer text-pretty text-right font-light text-gray-500 dark1:text-gray-400">
+                        class="text-xs hover:underline cursor-pointer text-pretty text-right font-light text-gray-500 dark1:text-gray-400 truncate">
                         {{ userData.user_details?.website }}
                     </a>
                 </div>

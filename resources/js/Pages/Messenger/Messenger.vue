@@ -1,8 +1,20 @@
 <script setup>
+import { onBeforeMount, onUnmounted } from 'vue';
 import MessengerLeft from '../../Partials/Messenger/MessengerLeft.vue';
 import { usePage } from '@inertiajs/vue3';
+import { useMessengerLeftFriendWithLatestMessageStore } from '../../Store/useMessengerLeftFriendWithLatestMessageStore';
+
+const friendsWithLatestMessageStore = useMessengerLeftFriendWithLatestMessageStore()
 
 const { friendsWithLastConversationMessage } = usePage().props
+
+onBeforeMount(() => {
+    friendsWithLatestMessageStore.loadInitialData(friendsWithLastConversationMessage)
+})
+
+// onUnmounted(() => {
+//     friendsWithLatestMessageStore.reset()
+// })
 
 </script>
 
@@ -10,9 +22,12 @@ const { friendsWithLastConversationMessage } = usePage().props
     <div class="main-container mt-3 md:mt-8">
         <div class="w-full flex antialiased text-neutral-800 main-border bg-white overflow-hidden">
             <div class="flex-1 flex flex-col">
+                <!-- <pre>
+                    {{ friendsWithLatestMessageStore }}
+                </pre> -->
                 <main class="flex-grow flex flex-row min-h-0">
                     <!-- Left Section -->
-                    <MessengerLeft :friends="friendsWithLastConversationMessage" />
+                    <MessengerLeft :friends="friendsWithLatestMessageStore.friends" />
                     <!-- Blank area -->
                     <div class="flex items-center justify-center bg-black/10 w-full"
                         style="height: calc(100vh - 300px);">

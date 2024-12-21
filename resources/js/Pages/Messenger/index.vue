@@ -4,14 +4,18 @@ import MessageArea from '../../Partials/Messenger/MessageArea.vue';
 import { usePage } from '@inertiajs/vue3';
 import { useMessengerUserStore } from '../../Store/useMessengerUserStore'
 import { onBeforeMount, onUnmounted } from 'vue';
-
+import { useMessengerLeftFriendWithLatestMessageStore } from '../../Store/useMessengerLeftFriendWithLatestMessageStore';
 const { friendsWithLastConversationMessage, friendData } = usePage().props
 
 const messengerStore = useMessengerUserStore()
+const friendsWithLatestMessageStore = useMessengerLeftFriendWithLatestMessageStore()
+
 
 onBeforeMount(() => {
     messengerStore.resetMessages()
     messengerStore.loadMessages(friendData)
+    friendsWithLatestMessageStore.loadInitialData(friendsWithLastConversationMessage)
+
 })
 
 onUnmounted(() => {
