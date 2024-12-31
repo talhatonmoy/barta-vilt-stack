@@ -6,6 +6,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy'; // Ziggy for route hand
 import NProgress from 'nprogress'; // Progress bar library
 import { router } from '@inertiajs/vue3'; // Inertia router
 import { createPinia } from 'pinia';
+// import FrameLayout from './Layouts/FrameLayout.vue';
 
 
 const pinia = createPinia();

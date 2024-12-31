@@ -30,7 +30,6 @@ class MessageController extends Controller
     // For individual User Message UI
     public function indexMessage(User $user){
         $friend = $user;
-
         $friendsWithLastConversationMessage = request()->user()->load([
             'friends.recentMessagesSentByThisUser',
             'friends.recentMessagesReceivedByThisUser'
