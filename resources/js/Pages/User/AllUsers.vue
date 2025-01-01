@@ -59,7 +59,7 @@ const filterMechanism = reactive({
             {
                 method: 'get',
                 data: {
-                    search: this.form.search,
+                    searchTerm: this.form.searchTerm,
                     city: this.form.city,
                     gender: this.form.gender,
                     primaryLang: this.form.primaryLang,
@@ -81,10 +81,6 @@ const filterMechanism = reactive({
     }
 
 })
-
-
-
-
 
 
 </script>

@@ -14,7 +14,6 @@ class PostMediaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // return parent::toArray($request);
         return [
             'id' => $this->id,
             'original_url' => $this->original_url,

@@ -11,14 +11,14 @@ const props = defineProps({
 </script>
 
 <template>
-    <Link :href="props.notification.data.post_link" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+    <Link :href="props.notification.data.post_link" class="flex px-4 py-3 hover:bg-gray-100 dark1:hover:bg-gray-700">
         <!-- <pre class="text-xs">
             {{ props.notification }}
         </pre> -->
         <div class="flex-shrink-0">
             <img class="rounded-full w-11 h-11" :src="props.notification.data.sender.profileImgUrl" alt="Leslie image">
             <div
-                class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-green-400 border border-white rounded-full dark:border-gray-800">
+                class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-green-400 border border-white rounded-full dark1:border-gray-800">
                 <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor" viewBox="0 0 20 18">
                     <path
@@ -27,11 +27,11 @@ const props = defineProps({
             </div>
         </div>
         <div class="w-full ps-3">
-            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400"><span
-                    class="font-semibold text-gray-900 dark:text-white">{{ props.notification.data.sender.first_name }} {{ props.notification.data.sender.last_name }}</span>
+            <div class="text-gray-500 text-sm mb-1.5 dark1:text-gray-400"><span
+                    class="font-semibold text-gray-900 dark1:text-white">{{ props.notification.data.sender.first_name }} {{ props.notification.data.sender.last_name }}</span>
                 {{ props.notification.data.message }} 
             </div>
-            <div class="text-xs text-blue-600 dark:text-blue-500">{{ props.notification.created_at }}</div>
+            <div class="text-xs text-blue-600 dark1:text-blue-500">{{ props.notification.created_at }}</div>
         </div>
     </Link>
 </template>

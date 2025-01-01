@@ -78,16 +78,19 @@ class UserController extends Controller
 
     // List All Users
     public function listAllUsers(UserSearchFilterRequest $request){
-
         $searchData = $request->validated();
-        // dd($searchData);
-  
         $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
-                        ->when($searchData['search'] ?? false, function($query) use ($searchData){
+                        ->when($searchData['searchTerm'] ?? false, function($query) use ($searchData){
                             return $query->whereAny([
                                 'first_name',
                                 'last_name'
-                            ], 'LIKE', "%" . $searchData['search']. "%");
+                            ], 'LIKE', "%" . $searchData['searchTerm']. "%");
+                        })
+                        ->when($searchData['search'] ?? false, function ($query) use ($searchData) {
+                            return $query->whereAny([
+                                'first_name',
+                                'last_name'
+                            ], 'LIKE', "%" . $searchData['search'] . "%");
                         })
                         ->when($searchData['city'] ?? false, function($query) use ($searchData){
                             // Checking at (hasOne - user_details related table)

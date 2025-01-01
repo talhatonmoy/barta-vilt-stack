@@ -50,10 +50,10 @@ const userAccountMenu = reactive({
                                 class="inline-flex items-center border-b-2 border-transparent  border-gray-800 px-1 pt-1 text-sm font-medium text-gray-600  hover:border-gray-300 hover:text-gray-800">
                             Timeline
                             </Link>
-                            <a href="#"
+                            <!-- <a href="#"
                                 class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-600  hover:border-gray-300 hover:text-gray-800">For
                                 you
-                            </a>
+                            </a> -->
 
                             <Link :href="route('users.list')"
                                 :class="{ 'border-b-gray-800 text-gray-900': $page.url === '/users' }"

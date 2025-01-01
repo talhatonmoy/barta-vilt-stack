@@ -10,7 +10,9 @@ use App\Services\PostService;
 use App\Helpers\MediaCollection;
 use App\Services\CommentService;
 use App\Http\Requests\PostStoreRequest;
+use App\Http\Resources\Post\PostEditResource;
 use App\Http\Resources\Post\PostResource;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class PostController extends Controller
 {
@@ -69,54 +71,30 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $uuid)
+    public function edit(object $postInstance)
     {
-        $postInstance = $this->postService->getThePostInstanceFrom($uuid);
         $this->authorize('update', $postInstance);
-        
-        $postDetail = Post::with('media')->select('id','uuid', 'post_body')
-            ->where('uuid', $uuid)
-            ->firstOrFail();
 
-        $formattedPostDetail = [
-            'uuid' => $postDetail['uuid'],
-            'post_body' => $postDetail['post_body'],
-            'post_images' => $postDetail->media->map(function ($eachMedia) {
-                return [
-                    'id' => $eachMedia->id,
-                    'url' => $eachMedia->getUrl(),
-                ];
-            })
-        ];
-        return Inertia::render('Post/EditPost', ['postDetail' => $formattedPostDetail]);
+        $postDetail = $postInstance->load('media');
+
+        return Inertia::render('Post/EditPost', [
+            'postDetail' => PostEditResource::make($postDetail)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $uuid)
+    public function update(Request $request, Object $post)
     {
-        $validatedData  = $request->all();
+        // Validate
+        $validatedData  = $request->input();
+
         dd($validatedData);
-        return Inertia::render('Test', ['validatedData' => $validatedData]);
 
-        
-        // $post = Post::where('uuid', $uuid);
-        // $this->authorize('update', $post);
-        // $dataToUpdate = [
-        //     'post_body' => $validatedData['post_body'],
-        //     'excerpt' => Str::limit($validatedData['post_body'], 250, '....'),
-        // ];
-        // $post->update($dataToUpdate);
+        // Do DB oparations
 
-        // // Uploading New Images
-        // if($request->hasFile('post_images')){
-        //     $images = $request->file('post_images');
-        //     foreach ($images as $image){
-        //         $post->addMedia($image)->toMediaCollection(MediaCollection::PostImage);
-        //     }
-        // }
-        // return redirect()->route('posts.show', $uuid);
+        return $validatedData;
     }
 
     /**

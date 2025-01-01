@@ -29,10 +29,7 @@ class MessageController extends Controller
 
     // For individual User Message UI
     public function indexMessage(User $user){
-        // dd('Hello');
         $friend = $user;
-
-        // dd($friend);
 
         $friendsWithLastConversationMessage = request()->user()->load([
             'friends.recentMessagesSentByThisUser',
@@ -56,7 +53,7 @@ class MessageController extends Controller
         return MessageResource::collection($messages);
     }
 
-    public function storeMessage( MessageStoreRequest $request,User $user){
+    public function storeMessage(MessageStoreRequest $request,User $user){
         $validatedData = $request->validated();
 
         $friend = $user;

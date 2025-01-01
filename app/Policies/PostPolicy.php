@@ -24,6 +24,7 @@ class PostPolicy
 
     public function update(User $user, Post $post)
     {
+        // dd($user->id === $post->user_id);
         return $user->id === $post->user_id; // Only the owner can update their post
     }
 
