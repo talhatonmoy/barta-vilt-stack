@@ -130,10 +130,6 @@ function removePreviewImage(index) {
                 </div>
             </div>
         </form>
-        
-        <pre>
-            {{ form }}
-        </pre>
     </div>
 </template>
 
