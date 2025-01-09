@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function(){
 
 
     // Post Routes
+    Route::post('/posts/mediaUpload/{post:uuid}', [PostController::class, 'mediaUpload'])->name('posts.mediaUpload');
     Route::resource('posts', PostController::class)->except(['index', 'create']);
 
 
@@ -111,6 +112,8 @@ Route::middleware('auth')->group(function(){
     Route::post('friend/{friend_requests}/unfriend', [FriendRequestController::class, 'unfriend'])->name('unfriend');
 
 
+    // Delete Media By Id
+    Route::post('barta/media/destroy/{id}', [BartaMediaController::class, 'destroy'])->name('media.destroy');
 
     // Logout user
     Route::get('logout', [UserAuthController::class, 'logout'])->name('user.logout');

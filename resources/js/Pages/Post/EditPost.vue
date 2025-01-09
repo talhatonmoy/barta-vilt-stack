@@ -1,36 +1,50 @@
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3';
+import axios from 'axios';
 const authUser = usePage().props.auth.user
 
-const postDetail = usePage().props.postDetail
+let postDetail = usePage().props.postDetail
 
 const editForm = useForm({
-    body: (postDetail.post_body) ? postDetail.post_body : '',
+    post_body: (postDetail.post_body) ? postDetail.post_body : '',
     media: postDetail.media,
-    trashMedia: [],
-    newMedia: []
 })
 
-function trashMedia(mediaId) {
+async function trashMedia(mediaId) {
     const mediaIndex = editForm.media.findIndex(item => item.id === mediaId)
     if (mediaIndex !== -1) {
+        // First Delete The media
+        const response = await axios.post(route('media.destroy', mediaId));
+        // Then Remove From state
         editForm.media.splice(mediaIndex, 1);
-        editForm.trashMedia.push(mediaId)
     }
 }
 
-function handleNewMedia(event) {
+async function handleNewMedia(event) {
     const mediaFiles = Array.from(event.target.files)
-    // console.log(event.target.files)
-    editForm.newMedia.push(...mediaFiles)
+    const formData = new FormData()
+
+    // Append each file to the form data object
+    mediaFiles.forEach(file => {
+        formData.append('media[]', file)
+    })
+
+    try {
+        const response = await axios.post(route('posts.mediaUpload', postDetail.uuid), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        // Update the media in edit form
+        editForm.media = response.data.postDetail.media
+
+    } catch (error) {
+        console.error('Error Uploading Media', error)
+    }
 }
 
 function handleSubmit() {
-    editForm.submit('put', route('posts.update', postDetail.uuid), {
-        onSuccess: () => {
-            console.log('Submitted' + editForm)
-        }
-    })
+    editForm.submit('put', route('posts.update', postDetail.uuid))
 }
 
 </script>
@@ -57,7 +71,7 @@ function handleSubmit() {
 
                     <!-- Content -->
                     <div class="text-gray-700 font-normal w-full">
-                        <textarea v-model="editForm.body"
+                        <textarea v-model="editForm.post_body"
                             class="block w-full p-2 pt-2 text-gray-900 rounded-lg border-none outline-none focus:ring-0 focus:ring-offset-0"
                             rows="2" placeholder="What's going on?"></textarea>
                     </div>

@@ -10,6 +10,7 @@ use App\Services\PostService;
 use App\Helpers\MediaCollection;
 use App\Services\CommentService;
 use App\Http\Requests\PostStoreRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\Post\PostEditResource;
 use App\Http\Resources\Post\PostResource;
 use PhpParser\Node\Expr\Cast\Object_;
@@ -85,16 +86,40 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Object $post)
+    public function update(PostUpdateRequest $request, Object $post)
     {
+        $validatedData  = $request->validated();
+
+        $status = $post->update([
+            'post_body' => $validatedData['post_body']
+        ]);
+
+        return redirect()->route('posts.show', $post->uuid);
+    }
+
+    /**
+     * Handling Media Upload (For now - on edit post page)
+     * Later will applied to create post as well
+     */
+    public function mediaUpload(Request $request, Post $post){
         // Validate
-        $validatedData  = $request->input();
+        $request->validate([
+            'media.*' => 'required|file|mimes:jpg,jpeg,png,gif,mp4|max:2048'
+        ]);
 
-        dd($validatedData);
+        // Upload
+        $uploadedMedia = $request->file('media');
+        if($uploadedMedia){
+            foreach($uploadedMedia as $media){
+               $post->addMedia($media)->toMediaCollection(MediaCollection::PostImage);
+            }
+        }
 
-        // Do DB oparations
-
-        return $validatedData;
+        // Response
+        return response()->json([
+            'status' => 'File Uploded Succesfully',
+            'postDetail' => PostEditResource::make($post->load('media'))
+        ]);
     }
 
     /**

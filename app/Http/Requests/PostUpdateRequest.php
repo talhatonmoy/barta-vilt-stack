@@ -23,9 +23,6 @@ class PostUpdateRequest extends FormRequest
     {
         return [
             'post_body' => ['required', 'max:2000'],
-            'new_images_to_add' => ['nullable', 'array'],
-            'new_images_to_add.*' => ['image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // Validate each image
-            'remove_image_ids_from_post' => ['array']
         ];
     }
 }
