@@ -19,6 +19,7 @@
         "@inertiajs/vue3": "^1.2.0",
         "@vitejs/plugin-vue": "^5.1.4",
         "nprogress": "^0.2.0",
-        "pinia": "^2.3.0"
+        "pinia": "^2.3.0",
+        "vue-filepond": "^7.0.4"
     }
 }

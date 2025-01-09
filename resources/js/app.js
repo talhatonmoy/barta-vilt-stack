@@ -6,6 +6,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy'; // Ziggy for route hand
 import NProgress from 'nprogress'; // Progress bar library
 import { router } from '@inertiajs/vue3'; // Inertia router
 import { createPinia } from 'pinia';
+
 // import FrameLayout from './Layouts/FrameLayout.vue';
 
 
@@ -34,6 +35,7 @@ createInertiaApp({
 
         // Register my custom directive 'click-away'
         app.directive('click-away', ClickAway);
+
 
         // Use Inertia plugin for handling navigation and state management
         app.use(plugin);

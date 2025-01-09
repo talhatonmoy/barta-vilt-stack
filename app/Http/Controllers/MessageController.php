@@ -52,7 +52,7 @@ class MessageController extends Controller
         return MessageResource::collection($messages);
     }
 
-    public function storeMessage( MessageStoreRequest $request,User $user){
+    public function storeMessage(MessageStoreRequest $request,User $user){
         $validatedData = $request->validated();
 
         $friend = $user;

@@ -2,7 +2,7 @@
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { reactive } from 'vue';
 import Like from './Like/Like.vue';
-import Dislike from './Like/Dislike.vue';
+
 const props = defineProps({
     post: {
         type: Object

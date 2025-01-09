@@ -26,11 +26,11 @@ const filterMechanism = props.filterMechanism;
             <div class="divide-y divide-gray-100 dark1:divide-gray-700">
                 <div class="max-w-sm mx-auto p-4 space-y-4">
                     <!-- By search -->
-                    <!-- <div>
-                        <input type="text" @submit="filterMechanism.performSearch" v-model="filterMechanism.form.search"
-                            placeholder="Search People"
+                    <div>
+                        <input type="text" @input.prevent="filterMechanism.performSearch"
+                            v-model="filterMechanism.form.searchTerm" placeholder="Search People"
                             class="bg-gray-50 border  border-gray-300 capitalize text-gray-900 text-sm rounded-md  focus:outline-none block w-full p-2 dark1:bg-gray-700 dark1:border-gray-600 dark1:placeholder-gray-400 dark1:text-white dark1:focus:ring-blue-500 dark1:focus:border-blue-500">
-                    </div> -->
+                    </div>
 
                     <!-- By City -->
                     <div>
