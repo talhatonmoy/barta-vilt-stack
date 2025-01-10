@@ -24,6 +24,16 @@ class CommentService{
     }
 
     /**
+     * Update Comment
+     */
+    public function updateComment($comment, $validatedData){
+        $comment->update([
+            'comment_body' => $validatedData['comment_body'],
+            'excerpt' => Str::limit($validatedData['comment_body'], '100', '...')
+        ]);
+    }
+
+    /**
      * Providing Comment Collections For a Single Post
      */
     public function getCommentsOfThisPostWithUserDataFrom($post_uuid){

@@ -17,7 +17,7 @@ class HasFriendship
     public function handle(Request $request, Closure $next): Response
     {
         $friend = $request->route('user');
-        $currentUser = auth()->user();
+        $currentUser = request()->user();
 
         if($this->isMyFriend($currentUser, $friend)){
             return $next($request);

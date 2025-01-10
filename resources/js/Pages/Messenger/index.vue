@@ -5,7 +5,7 @@ import { usePage } from '@inertiajs/vue3';
 import { useMessengerUserStore } from '../../Store/useMessengerUserStore'
 import { onBeforeMount, onUnmounted } from 'vue';
 import { useMessengerLeftFriendWithLatestMessageStore } from '../../Store/useMessengerLeftFriendWithLatestMessageStore';
-const { friendsWithLastConversationMessage, friendData } = usePage().props
+const { friendListWithLastMessage, friendData } = usePage().props
 
 const messengerStore = useMessengerUserStore()
 const friendsWithLatestMessageStore = useMessengerLeftFriendWithLatestMessageStore()
@@ -14,7 +14,7 @@ const friendsWithLatestMessageStore = useMessengerLeftFriendWithLatestMessageSto
 onBeforeMount(() => {
     messengerStore.resetMessages()
     messengerStore.loadMessages(friendData)
-    friendsWithLatestMessageStore.loadInitialData(friendsWithLastConversationMessage)
+    friendsWithLatestMessageStore.loadInitialData(friendListWithLastMessage)
 
 })
 
@@ -29,11 +29,11 @@ onUnmounted(() => {
         <div class="w-full flex antialiased text-neutral-800 main-border bg-white overflow-hidden">
             <div class="flex-1 flex flex-col">
                 <!-- <pre class="bg-red-50">
-                    {{ friendsWithLastConversationMessage }}
+                    {{ friendListWithLastMessage }}
                 </pre> -->
                 <main class="flex-grow flex flex-row min-h-0">
                     <!-- Left Section -->
-                    <MessengerLeft :friends="friendsWithLastConversationMessage" />
+                    <MessengerLeft :friends="friendListWithLastMessage" />
                     
                     <!-- Message Area -->
                     <MessageArea :messages="messengerStore.messages" />

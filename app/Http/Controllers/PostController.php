@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Inertia\Inertia;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\PostService;
-use App\Helpers\MediaCollection;
 use App\Services\CommentService;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
@@ -26,37 +24,29 @@ class PostController extends Controller
 
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created post in storage.
      */
     public function store(PostStoreRequest $request)
     {
+        // Validation
         $validatedData  = $request->validated();
+        // Authorization
         $this->authorize('create', Post::class);
-        $dataToInsert = [
-            'uuid' => Str::uuid()->toString(),
-            'post_body' => $validatedData['post_body'],
-            'excerpt' => Str::limit($validatedData['post_body'], 250, '....'),
-        ]; 
-        $post = Post::make($dataToInsert);
-        $request->user()->posts()->save($post);
-        
-        // Handling Multiple File Upload
-        if ($request->hasFile('post_images')) {
-            $images = $request->file('post_images');
-            foreach ($images as $image) {
-                $post->addMedia($image)->toMediaCollection(MediaCollection::PostImage);
-            }
-        }
-        // return redirect()->route('user.timeline');
-        return to_route('user.timeline');
+        // Store
+        $this->postService->storePost($request, $validatedData);
+        // Redirect
+        return redirect()->route('user.timeline');
     }
 
     /**
-     * Display the specified resource.
+     * Display the post.
      */
     public function show(Post $post)
     {
+        // Authorization
         $this->authorize('viewAny', $post);
+
+        // Getting necessary data
         $postDetail = $this->postService->getPostDetailWithAllData($post);
         
         return Inertia::render('Post/SinglePost', [
@@ -69,12 +59,14 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the post.
      */
     public function edit(object $postInstance)
     {
+        // Authorization
         $this->authorize('update', $postInstance);
 
+        // Loading necesary data
         $postDetail = $postInstance->load('media');
 
         return Inertia::render('Post/EditPost', [
@@ -83,13 +75,16 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified post.
+     * Only post body - media will be handaled via 'mediaUpload' method 
      */
     public function update(PostUpdateRequest $request, Object $post)
     {
+        // Validation
         $validatedData  = $request->validated();
 
-        $status = $post->update([
+        // Update
+        $post->update([
             'post_body' => $validatedData['post_body']
         ]);
 
@@ -101,35 +96,31 @@ class PostController extends Controller
      * Later will applied to create post as well
      */
     public function mediaUpload(Request $request, Post $post){
-        // Validate
+        // Validation
         $request->validate([
             'media.*' => 'required|file|mimes:jpg,jpeg,png,gif,mp4|max:2048'
         ]);
 
         // Upload
-        $uploadedMedia = $request->file('media');
-        if($uploadedMedia){
-            foreach($uploadedMedia as $media){
-               $post->addMedia($media)->toMediaCollection(MediaCollection::PostImage);
-            }
-        }
+        $this->postService->handleMediaUpload($request, $post);
 
         // Response
         return response()->json([
-            'status' => 'File Uploded Succesfully',
             'postDetail' => PostEditResource::make($post->load('media'))
         ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the post.
      */
-    public function destroy(string $uuid)
+    public function destroy(Post $post)
     {
-        $post = $this->postService->getThePostInstanceFrom($uuid);
+        // Authorization
         $this->authorize('delete', $post);
-        $post->comments()->delete();
-        $post->delete();
+
+        // Delete
+        $this->postService->deletePostWithDependecies($post);
+
         return redirect()->route('user.timeline');
     }
 }

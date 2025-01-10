@@ -2,64 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Like;
 use App\Models\Post;
-use App\Models\User;
-use App\Events\TestEvent;
 use App\Http\Resources\Post\PostResource;
-use Illuminate\Http\Request;
-use App\Notifications\Post\PostLiked;
-use Illuminate\Support\Facades\Notification;
+use App\Services\PostLikeService;
 
 class PostLikeController extends Controller
 {
+    public function __construct(protected PostLikeService $postLikeService)
+    {
+        
+    }
 
     public function toggleLike(Post $post)
     {
-        $like = Like::where([
-                    'user_id' => auth()->id(),
-                    'likeable_type' => Post::class,
-                    'likeable_id' => $post->id
-                ])->first();
+        // Get the like instance
+        $like = $this->postLikeService->getTheLikeModel($post);
 
         if($like){
+            // Delete the model
             $like->delete();
         }else{
-            $like = Like::create([
-                'user_id' => auth()->id(),
-                'likeable_type' => Post::class,
-                'likeable_id' => $post->id,
-                'is_like' => true
-            ]);
+            // Store new model
+            $like = $this->postLikeService->storeNewLike($post);
             
             // Notify Post Author
-            if($post->user_id != auth()->id()){
-                $post->load('user.media');
-                $post_author = User::find($post->user_id);
-                $post_author->notify(new PostLiked($post));
-            }
-            
+            $this->postLikeService->notifyThePostAuthor($post);
         }
         
-        $updatedPost = Post::select(['id', 'uuid', 'user_id', 'excerpt', 'created_at', 'updated_at'])
-        ->with(['media', 'user', 'likes.user'])
-        ->withCount('comments', 'likes')
-            ->find($post->id);
-            
+        // Returning updated post
+        $updatedPost = $this->postLikeService->getTheUpdatedPost($post);
         return new PostResource($updatedPost);
     }
 
-    public function toggleDislike(Post $post)
-    {
-        $like = Like::updateOrCreate(
-            [
-                'user_id' => auth()->id(),
-                'likeable_id' => $post->id,
-                'likeable_type' => Post::class,
-            ],
-            ['is_like' => false]
-        );
-
-        return back();
-    }
 }

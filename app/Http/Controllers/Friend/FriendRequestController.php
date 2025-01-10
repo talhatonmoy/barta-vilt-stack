@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Friend;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Models\FriendRequests;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Friendship;
 use App\Notifications\Friend\FriendRequestSent;
 
 class FriendRequestController extends Controller
@@ -39,9 +37,10 @@ class FriendRequestController extends Controller
 
     public function acceptFriendRequest(FriendRequests $friend_requests){
        $friendRequestData = $friend_requests;
-    //    Authorizing
+
+       // Authorizing
        if($friendRequestData->receiver_id !== auth()->id()){
-        return;
+            return;
        }
 
        $friendRequestData->update(['status' => 'accepted']);
@@ -64,7 +63,7 @@ class FriendRequestController extends Controller
 
 
     public function rejectFriendRequest(FriendRequests $friendRequests){
-        $friendRequestData = $friendRequests; // Just to give a valid name
+        $friendRequestData = $friendRequests; // Just to assign a valid name
 
         // Authorizing
         if($friendRequestData->receiver_id != auth()->id()){

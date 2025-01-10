@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
 use App\Notifications\Post\NewComment;
@@ -18,29 +17,17 @@ class CommentController extends Controller
     {
         $this->commentService = $commentService;
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a newly created comment.
      */
     public function store(CommentStoreRequest $request)
     {
-        $this->authorize('create', Comment::class);
+        // Validation
         $validatedData = $request->validated();
+        // Authoriation
+        $this->authorize('create', Comment::class);
+        // Store
         $comment = $this->commentService->storeComment($validatedData);
 
         // Notify Post Author
@@ -53,45 +40,35 @@ class CommentController extends Controller
 
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(CommentUpdateRequest $request, string $uuid)
+    public function update(CommentUpdateRequest $request, Comment $comment)
     {
-        $comment = Comment::where('uuid', $uuid)->firstOrFail();
-        $this->authorize('update', $comment);
+        // Validation
         $validatedData = $request->validated();
-        $comment->update([
-            'comment_body' => $validatedData['comment_body'],
-            'excerpt' => Str::limit($validatedData['comment_body'], '100', '...')
-        ]);
+
+        // Authorization
+        $this->authorize('update', $comment);
+        
+        // Update 
+        $this->commentService->updateComment($comment, $validatedData);
+
+        // Redirect
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $uuid)
+    public function destroy(Comment $comment)
     {
-        $comment = Comment::where('uuid', $uuid)->firstOrFail();
+        // Authorization
         $this->authorize('delete', $comment);
         
+        // Delete
         $comment->delete();
+
+        // Redirect
         return back();
     }
 }

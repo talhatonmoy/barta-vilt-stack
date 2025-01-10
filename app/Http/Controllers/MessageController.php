@@ -10,19 +10,24 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Message;
 use App\Http\Resources\UserResource;
-use App\Models\Friendship;
+use App\Services\CommentService;
+use App\Services\MessageService;
 
 class MessageController extends Controller
 {
+    protected $messageService;
+    public function __construct(MessageService $messageService)
+    {
+        $this->messageService = $messageService;
+    }
+
+
     // For Messenger UI
     public function messenger(){
-        $friendsWithLastConversationMessage = request()->user()->load([
-            'friends.recentMessagesSentByThisUser',
-            'friends.recentMessagesReceivedByThisUser'
-        ])->friends;
+        $friendList = $this->messageService->friendListWithLastConversationMessage();
 
         return Inertia::render('Messenger/Messenger', [
-            'friendsWithLastConversationMessage' => FriendResourceForMessengerSidebar::collection($friendsWithLastConversationMessage)
+            'friendListWithLatestMessage' => FriendResourceForMessengerSidebar::collection($friendList)
         ]);
     }
     
@@ -30,47 +35,36 @@ class MessageController extends Controller
     // For individual User Message UI
     public function indexMessage(User $user){
         $friend = $user;
-        $friendsWithLastConversationMessage = request()->user()->load([
-            'friends.recentMessagesSentByThisUser',
-            'friends.recentMessagesReceivedByThisUser'
-        ])->friends;
+
+        $friendListWithLastMessage = $this->messageService->friendListWithLastConversationMessage();
 
         return Inertia::render('Messenger/Index', [
             'friendData' => UserResource::make($friend),
-            'friendsWithLastConversationMessage' => FriendResourceForMessengerSidebar::collection($friendsWithLastConversationMessage)
+            'friendListWithLastMessage' => FriendResourceForMessengerSidebar::collection($friendListWithLastMessage)
         ]);
     }
 
     public function loadMessage(User $user){
-        $friend = $user;
-
-        $messages = Message::whereIn('sender_id', [auth()->id(), $friend->id])
-        ->whereIn('receiver_id', [auth()->id(), $friend->id])
-        ->orderByDesc('created_at')
-        ->paginate(25);
+        $friend = $user; // Pointing friend
+    
+        $messages = $this->messageService->getConversationWith($friend);
         
         return MessageResource::collection($messages);
     }
 
     public function storeMessage(MessageStoreRequest $request,User $user){
+        $friend = $user;
+
+        // Validation
         $validatedData = $request->validated();
 
-        $friend = $user;
-        $friend->recentMessagesSentByThisUser()->update([
-            'read_at' => now()
-        ]);
-
-        $message = Message::create([
-            'sender_id' => auth()->id(),
-            'receiver_id' => $friend->id,
-            'body' => $validatedData['body'],
-        ]);
-
-       
-
+        // Store
+        $message = $this->messageService->storeMessage($friend, $validatedData);
+        
         // BroadCasting Message
         broadcast(new NewMessageCreated($message));
 
+        // Return response
         return MessageResource::make($message);
     }
 }
