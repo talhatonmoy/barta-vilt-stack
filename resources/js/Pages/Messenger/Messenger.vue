@@ -6,10 +6,10 @@ import { useMessengerLeftFriendWithLatestMessageStore } from '../../Store/useMes
 
 const friendsWithLatestMessageStore = useMessengerLeftFriendWithLatestMessageStore()
 
-const { friendsWithLastConversationMessage } = usePage().props
+const { friendListWithLatestMessage } = usePage().props
 
 onBeforeMount(() => {
-    friendsWithLatestMessageStore.loadInitialData(friendsWithLastConversationMessage)
+    friendsWithLatestMessageStore.loadInitialData(friendListWithLatestMessage)
 })
 
 // onUnmounted(() => {
@@ -43,14 +43,7 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
-/* can be configured in tailwind.config.js */
-/* .group:hover .group-hover\:block {
-    display: block;
-} */
 
-/* .hover\:w-64:hover {
-    width: 45%;
-} */
 
 
 /* NO NEED THIS CSS - just for custom scrollbar which can also be configured in tailwind.config.js*/

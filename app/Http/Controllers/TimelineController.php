@@ -10,11 +10,8 @@ use App\Services\PostCardComponentService;
 
 class TimelineController extends Controller
 {
-    public $timelineService, $postCardComponentService, $postService;
-    public function __construct(
-        TimelineService $timelineService, 
-        PostCardComponentService $postCardComponentService
-        )
+    protected $timelineService, $postCardComponentService, $postService;
+    public function __construct( TimelineService $timelineService,  PostCardComponentService $postCardComponentService )
     {
         $this->timelineService = $timelineService;
         $this->postCardComponentService = $postCardComponentService;

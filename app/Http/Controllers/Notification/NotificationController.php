@@ -4,36 +4,37 @@ namespace App\Http\Controllers\Notification;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Notification\NotificationResource;
+use App\Services\NotificationService;
 use Inertia\Inertia;
 
 class NotificationController extends Controller
 {
+    public function __construct(protected NotificationService $notificationService)
+    {
+        
+    }
+
     // For All notifications page
     public function allNotifications()
     {
-        $allNotifications = auth()->user()->notifications;
-        $allNotifications->markAsRead();
-        $userNotifications = NotificationResource::collection(auth()->user()->notifications);
+        $userNotifications = $this->notificationService->getAllNotifications();
         return Inertia::render('Notifications/AllNotifications', compact('userNotifications'));
     }
 
-    // For All notifications page
-    public function lastFewNotification()
+    // Latest few notification for sidebar
+    public function latestFewNotification()
     {
-        $allNotifications = auth()->user()->notifications;
-        $latFewNotifications = NotificationResource::collection(auth()->user()->notifications->take(7));
+        $latFewNotifications = $this->notificationService->getFewLatestNotifications();
         return $latFewNotifications;
     }
 
-    // For notifications tray
+    // For notifications tray on top header
     public function notificationTray(){
-        $user  = auth()->user();
-        $unreadNotifications = $user->unreadNotifications;
-        return NotificationResource::collection($unreadNotifications);
+        return $this->notificationService->getUnreadNotificaions();
     }
 
     public function markAllAsRead(){
-        $userNotifications = auth()->user()->notifications;
+        $userNotifications = request()->user()->notifications;
         $userNotifications->markAsRead();
         return back();
     }

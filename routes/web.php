@@ -78,7 +78,9 @@ Route::middleware('auth')->group(function(){
 
 
     // Comments
-    Route::resource('comments', CommentController::class);
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::put('/comments/{comment:uuid}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment:uuid}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // Messenger
     Route::get('/messenger', [MessageController::class, 'messenger'])->name('messenger');
@@ -93,7 +95,7 @@ Route::middleware('auth')->group(function(){
 
     // User Notifications
     Route::get('/notifications', [NotificationController::class, 'allNotifications'])->name('user.notifications');
-    Route::get('/lastFewNotifications', [NotificationController::class, 'lastFewNotification'])->name('user.notifications.few');
+    Route::get('/lastFewNotifications', [NotificationController::class, 'latestFewNotification'])->name('user.notifications.few');
     
     // Notifications Tray (for returning unread notifications only)
     Route::get('/notifications/tray', [NotificationController::class, 'notificationTray'])->name('user.notifications.tray');

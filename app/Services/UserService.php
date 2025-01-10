@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Support\Str;
 use App\Helpers\MediaCollection;
 use App\Helpers\ReusableHelpers;
 use App\Http\Resources\UserResource;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class UserService{
 
@@ -27,6 +29,95 @@ class UserService{
     }
 
     /**
+     * Get user posts
+     */
+    public function getUserPosts(Object $userObject, Int $paginate = 10){
+        return $userObject->posts()->paginate($paginate);
+    }
+
+    /**
+     * Get user profile data
+     */
+    public function getUserProfileData(Object $userObject){
+        $userObject->loadCount(['comments', 'posts', 'friends']);
+        $userObject->load(['sentFriendRequests', 'receivedFriendRequests']);
+
+        return $userObject;
+    }
+
+    /**
+     * Perform loggedin user profile update
+     */
+    public function performLoggedInUserProfileUpdate($request, $validatedData){
+        $user = $request->user();
+
+        $user->update([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'bio' => Str::limit($validatedData['bio'], 220, '...')
+        ]);
+
+        if ($request->hasFile('profileImg')) {
+            $user->addMedia($request->file('profileImg'))->toMediaCollection(MediaCollection::UserProfileImage);
+        }
+    }
+
+    /**
+     * Providing all users with search query and filters
+     * Along with default pagination = 12
+     */
+    public function getAllUsersWithAppliedFilters($searchData, Int $paginate = 12){
+        $allUsers = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
+            ->when($searchData['searchTerm'] ?? false, function ($query) use ($searchData) {
+                return $query->whereAny([
+                    'first_name',
+                    'last_name'
+                ], 'LIKE', "%" . $searchData['searchTerm'] . "%");
+            })
+            ->when($searchData['search'] ?? false, function ($query) use ($searchData) {
+                return $query->whereAny([
+                    'first_name',
+                    'last_name'
+                ], 'LIKE', "%" . $searchData['search'] . "%");
+            })
+            ->when($searchData['city'] ?? false, function ($query) use ($searchData) {
+                // Checking at (hasOne - user_details related table)
+                return $query->whereHas('user_details', function ($query) use ($searchData) {
+                    $query->where('current_city', $searchData['city']);
+                });
+            })
+            ->when($searchData['gender'] ?? false, function ($query) use ($searchData) {
+                // Checking at (hasOne - user_details related table)
+                return $query->whereHas('user_details', function ($query) use ($searchData) {
+                    $query->where('gender', $searchData['gender']);
+                });
+            })
+            ->when($searchData['primaryLang'] ?? false, function ($query) use ($searchData) {
+                // Checking at (hasOne - user_details related table)
+                return $query->whereHas('user_details', function ($query) use ($searchData) {
+                    $query->where('primary_lang', $searchData['primaryLang']);
+                });
+            })
+            ->where('id', '!=', auth()->id())
+            ->paginate($paginate)
+            ->withQueryString();
+
+        return $allUsers;
+    }
+
+    /**
+     * Providing filterable user detail 
+     * for people page sidebar filter
+     */
+    public function getFiltarableUserDetail(){
+        $filterableUserDetails = [];
+        $filterableUserDetails['uniqueCities'] = UserDetail::whereNotNull('current_city')->distinct()->pluck('current_city');
+        $filterableUserDetails['primaryLang'] = UserDetail::whereNotNull('primary_lang')->distinct()->pluck('primary_lang');
+
+        return $filterableUserDetails;
+    }
+
+    /**
      * Providing authenticated user data
      * Ready for vue component
      */
@@ -37,7 +128,6 @@ class UserService{
                 ->withCount('comments', 'posts')
                 ->find(auth()->id()); 
             return UserResource::make($userData);
-            // return $userData;
         }
         return null;
     }

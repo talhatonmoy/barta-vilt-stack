@@ -8,7 +8,7 @@ import { reactive, ref } from 'vue';
 const props = usePage().props;
 
 const user = props.auth.user
-const userData = props.userData;
+const userProfileData = props.userProfileData;
 const userPosts = props.userPosts;
 
 const userPostsCollection = ref(userPosts.data)
@@ -30,35 +30,35 @@ function loadMorePost() {
 
 
 const friendRequest = reactive({
-    status: (userData.received_friend_request_data)
-        ? userData.received_friend_request_data.status
-        : (userData.sent_friend_request_data)
-        ? userData.sent_friend_request_data.status
+    status: (userProfileData.received_friend_request_data)
+        ? userProfileData.received_friend_request_data.status
+        : (userProfileData.sent_friend_request_data)
+        ? userProfileData.sent_friend_request_data.status
         : 'add friend',
 
     toggle() {
-        router.visit(route('friend.request.toggle', userData.user_name), {
+        router.visit(route('friend.request.toggle', userProfileData.user_name), {
             method: 'post',
             preserveScroll: true,
         })
     },
 
     withdraw() {
-        router.visit(route('friend.request.toggle', userData.user_name), {
+        router.visit(route('friend.request.toggle', userProfileData.user_name), {
             method: 'post',
             preserveScroll: true
         })
     },
 
     accept() {
-        router.visit(route('friend.request.accept', userData.sent_friend_request_data), {
+        router.visit(route('friend.request.accept', userProfileData.sent_friend_request_data), {
             method: 'post',
             preserveScroll: true
         })
     },
 
     reject() {
-        router.visit(route('friend.request.reject', userData.sent_friend_request_data.id), {
+        router.visit(route('friend.request.reject', userProfileData.sent_friend_request_data.id), {
             method: 'post',
             preserveScroll: true,
             onBefore: () => {
@@ -68,11 +68,11 @@ const friendRequest = reactive({
     },
 
     unfriendThisUser() {
-        router.visit(route('unfriend', (userData.received_friend_request_data) ? userData.received_friend_request_data.id : userData.sent_friend_request_data.id), {
+        router.visit(route('unfriend', (userProfileData.received_friend_request_data) ? userProfileData.received_friend_request_data.id : userProfileData.sent_friend_request_data.id), {
             method: 'post',
             preserveScroll: true,
             onBefore: () => {
-                return confirm(`Are you really want to unfriend ${userData.first_name} ${userData.last_name} ?`)
+                return confirm(`Are you really want to unfriend ${userProfileData.first_name} ${userProfileData.last_name} ?`)
             }
         })
     }
@@ -82,7 +82,7 @@ const friendRequest = reactive({
 
 <template>
     <!-- <pre>
-            {{ userData }}
+            {{ userProfileData }}
     </pre>
 
     <pre>
@@ -96,16 +96,16 @@ const friendRequest = reactive({
             <div class="flex gap-4 justify-center flex-col text-center items-center">
                 <!-- Avatar -->
                 <div class="relative">
-                    <img class="w-32 h-32 rounded-full ring-2 ring-neutral-900" :src="userData.profileImgUrl"
-                        :alt="userData.first_name" />
+                    <img class="w-32 h-32 rounded-full ring-2 ring-neutral-900" :src="userProfileData.profileImgUrl"
+                        :alt="userProfileData.first_name" />
                     <!--            <span class="bottom-2 right-4 absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark1:border-gray-800 rounded-full"></span>-->
                 </div>
                 <!-- /Avatar -->
 
                 <!-- User Meta -->
                 <div>
-                    <h1 class="font-bold md:text-2xl">{{ userData.first_name }} {{ userData.last_name }}</h1>
-                    <p class="text-gray-700">{{ userData.bio }}</p>
+                    <h1 class="font-bold md:text-2xl">{{ userProfileData.first_name }} {{ userProfileData.last_name }}</h1>
+                    <p class="text-gray-700">{{ userProfileData.bio }}</p>
                 </div>
                 <!-- / User Meta -->
             </div>
@@ -115,23 +115,23 @@ const friendRequest = reactive({
             <div class="flex flex-row gap-16 justify-center text-center items-center">
                 <!-- Total Posts Count -->
                 <div class="flex flex-col justify-center items-center">
-                    <h4 class="sm:text-xl font-bold">{{ userData.posts_count }}</h4>
-                    <p class="text-gray-600">{{ SingularPluralHelperTextOnly(userData.posts_count, 'Post', 'Posts')
+                    <h4 class="sm:text-xl font-bold">{{ userProfileData.posts_count }}</h4>
+                    <p class="text-gray-600">{{ SingularPluralHelperTextOnly(userProfileData.posts_count, 'Post', 'Posts')
                         }}
                     </p>
                 </div>
 
                 <!-- Total Comments Count -->
                 <div class="flex flex-col justify-center items-center">
-                    <h4 class="sm:text-xl font-bold">{{ userData.comments_count }}</h4>
-                    <p class="text-gray-600">{{ SingularPluralHelperTextOnly(userData.comments_count, 'Comment',
+                    <h4 class="sm:text-xl font-bold">{{ userProfileData.comments_count }}</h4>
+                    <p class="text-gray-600">{{ SingularPluralHelperTextOnly(userProfileData.comments_count, 'Comment',
                         'Comments') }}</p>
                 </div>
             </div>
             <!-- /Profile Stats -->
 
             <!-- Edit Profile Button (Only visible to the profile owner) -->
-            <Link v-if="userData.user_name == user.user_name" :href="route('user.profile.edit')"
+            <Link v-if="userProfileData.user_name == user.user_name" :href="route('user.profile.edit')"
                 class="-m-2 flex gap-2 items-center rounded-full px-4 py-2 font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
@@ -142,9 +142,9 @@ const friendRequest = reactive({
             </Link>
             <!-- /Edit Profile Button -->
 
-            <template v-if="userData.user_name != user.user_name">
+            <template v-if="userProfileData.user_name != user.user_name">
                 <!-- Actions Buttons Before accepting (Request Receiver End - Accept - Reject)-->
-                <div v-if="userData.sent_friend_request_data != null && userData.sent_friend_request_data.status !== 'accepted'"
+                <div v-if="userProfileData.sent_friend_request_data != null && userProfileData.sent_friend_request_data.status !== 'accepted'"
                     class="inline-flex rounded-md shadow-sm" role="group">
                     <button @click.prevent="friendRequest.accept"
                         class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700  dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
@@ -179,7 +179,7 @@ const friendRequest = reactive({
 
                 <!-- Actions buttons at pending status (Request Sender End View - Pending - Withdraw) -->
                 <div
-                    v-if="userData.received_friend_request_data !== null && userData.received_friend_request_data.status === 'pending'">
+                    v-if="userProfileData.received_friend_request_data !== null && userProfileData.received_friend_request_data.status === 'pending'">
                     <div class="inline-flex rounded-md shadow-sm" role="group">
                         <button type="button"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg   dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
@@ -217,7 +217,7 @@ const friendRequest = reactive({
                             Connected
                         </button>
 
-                        <Link :href="route('message.index', userData.user_name )"
+                        <Link :href="route('message.index', userProfileData.user_name )"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200  dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-4 mr-1">
@@ -241,7 +241,7 @@ const friendRequest = reactive({
                 </div>
 
                 <!-- Sent Friend request - Default -->
-                <div v-if="!userData.sent_friend_request_data && !userData.received_friend_request_data">
+                <div v-if="!userProfileData.sent_friend_request_data && !userProfileData.received_friend_request_data">
                     <div class="inline-flex rounded-md shadow-sm" role="group">
                         <button type="button" @click.prevent="friendRequest.toggle"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg rounded-e-lg   dark1:bg-gray-800 dark1:border-gray-700 dark1:text-white dark1:hover:text-white dark1:hover:bg-gray-700 ">
