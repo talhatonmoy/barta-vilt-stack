@@ -47,7 +47,6 @@ export const useMessengerUserStore = defineStore('messenger',{
 
         // Storing new message
         async storeMessage(payload) {
-
             const response = await axios.post(route('message.store', this.friendData.user_name), payload)
             this.appendNewMessageToCurrentState(response.data) // For message area
             
@@ -58,13 +57,18 @@ export const useMessengerUserStore = defineStore('messenger',{
 
         // Appending new message to current message state (auth user end)
         appendNewMessageToCurrentState(newlyCreatedMessage) {
+            if (this.friendData.id != newlyCreatedMessage.receiver_id) { 
+                return;
+            }
+            
             if (this.messages.length == 25) {
                 this.messages.pop()
             }
             this.messages = [newlyCreatedMessage, ...this.messages]
-            this.latestMessage = newlyCreatedMessage
 
+            this.latestMessage = newlyCreatedMessage
             
+            // console.log(this.friendData.id)
         },
 
     }// End Action

@@ -35,21 +35,21 @@ function handlePostDelete() {
 </script>
 
 <template>
-    <!-- <pre>
-        {{ props.post }}
-    </pre> -->
     <article class="main-border  rounded-lg  mx-auto max-w-none px-4 py-5 sm:px-6">
+        <!-- <pre>
+            {{ props.post }}
+        </pre> -->
         <!-- Barta Card Top -->
         <header>
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <!-- User Avatar -->
-                    <Link :href="route('user.profile.show', props.post.user.user_name)">
+                    <!-- <Link :href="route('user.profile.show', props.post.user.user_name)"> -->
                     <div class="flex-shrink-0">
                         <img class="h-10 w-10 rounded-full object-cover" :src="props.post.user.profileImgUrl"
                             :alt="props.post.user.first_name" />
                     </div>
-                    </Link>
+                    <!-- </Link> -->
 
                     <!-- /User Avatar -->
 

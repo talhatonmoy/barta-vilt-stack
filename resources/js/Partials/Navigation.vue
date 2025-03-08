@@ -93,7 +93,7 @@ const userAccountMenu = reactive({
                     </Link>
 
                     <!-- Profile dropdown -->
-                    <div class="relative ml-3 hidden sm:block">
+                    <div class="relative ml-3">
                         <div>
                             <button @click="userAccountMenu.handleChange" type="button"
                                 v-click-away="userAccountMenu.reset" class="flex rounded-full "
@@ -155,26 +155,18 @@ const userAccountMenu = reactive({
         <!-- Mobile userAccountMenu, show/hide based on userAccountMenu state. -->
         <div v-show="bartaNavMenu.open" class="sm:hidden transition-all duration-300" id="mobile-userAccountMenu">
             <div class="border-t border-gray-200 pt-4 pb-3">
-                <div class="flex items-center px-4">
-                    <div>
-                        <div class="text-base font-medium text-gray-800">
-                            Ahmed Shamim Hasan Shaon
-                        </div>
-                        <div class="text-sm font-medium text-gray-500">
-                            shaon@shamim.com
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-3 space-y-1">
-                    <a href="/user/profile"
-                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Your
-                        Profile</a>
-                    <a href="/user/edit-profile"
+                <div class="space-y-1">
+                    <Link :href="route('user.timeline')"
+                        class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">
+                        Timeline</Link>
+                        
+                    <Link :href="route('users.list')"
                         class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Edit
-                        Profile</a>
-                    <a href=""
+                        People</Link>
+                        
+                    <Link :href="route('user.logout')"
                         class="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800">Sign
-                        out</a>
+                        out</Link>
                 </div>
             </div>
         </div>

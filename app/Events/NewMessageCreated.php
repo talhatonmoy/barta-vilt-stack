@@ -43,6 +43,7 @@ class NewMessageCreated implements ShouldBroadcastNow
      */
     public function broadcastOn(): array
     {
+        // dd($this->message);
         return [
             new PrivateChannel('messenger.' . $this->message->receiver_id),
         ];

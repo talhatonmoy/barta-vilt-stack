@@ -61,6 +61,7 @@ class MessageController extends Controller
         // Store
         $message = $this->messageService->storeMessage($friend, $validatedData);
         
+    
         // BroadCasting Message
         broadcast(new NewMessageCreated($message));
 

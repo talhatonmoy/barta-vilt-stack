@@ -21,20 +21,20 @@ const authUser = usePage().props.auth.user
         {{ friends }}
     </pre> -->
         <!-- Head Section -->
-        <div class="header p-4 flex gap-4 items-center">
+        <div class="header p-4 flex gap-4 items-center border-b-2" >
             <!-- Image -->
-            <div class="w-14 h-14 relative flex justify-center ring-1 p-0.5 rounded-full">
+            <div class="hidden w-14 h-14 relative md:flex justify-center ring-1 p-0.5 rounded-full">
                 <img class="shadow-md rounded-full w-full h-full object-cover" :src="authUser.profileImgUrl"
                     :alt="authUser.user_name" />
             </div>
             <div>
-                <h2 class="text-2xl font-bold leading-0">Chats</h2>
-                <p class="font-medium leading-0 text-gray-500">{{ authUser.first_name }} {{ authUser.last_name }}</p>
+                <h2 class=" text-md md:text-2xl font-bold leading-0">Chats</h2>
+                <p class="text-xs md:text-md  font-medium leading-0 text-gray-500">{{ authUser.first_name }} {{ authUser.last_name }}</p>
             </div>
         </div>
 
         <!-- Search Form -->
-        <div class="search-box p-2 flex-none">
+        <!-- <div class="search-box p-2 flex-none">
             <form onsubmit="">
                 <div class="relative">
                     <label
@@ -51,7 +51,7 @@ const authUser = usePage().props.auth.user
                     </label>
                 </div>
             </form>
-        </div>
+        </div> -->
 
         <!-- Users -->
         <div class="contacts p-2 overflow-y-auto">
@@ -91,9 +91,7 @@ const authUser = usePage().props.auth.user
                     <p class="text-gray-500">No friends found</p>
                 </div>
             </template>
-
-
-
+            
         </div>
     </section>
 </template>

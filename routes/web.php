@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Friend\FriendRequestController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Notification\NotificationController;
+use App\Http\Controllers\Search\SearchController;
 use App\Http\Middleware\Messenger\HasFriendship;
 
 /**
@@ -65,6 +66,8 @@ Route::middleware('auth')->group(function(){
     // Handle User Detail update
     Route::patch('user/profile/detail', [UserDetailController::class, 'userDetailUpdate'])->name('user.detail.update');
 
+    // Global Search
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
 
     // Post Routes
     Route::post('/posts/mediaUpload/{post:uuid}', [PostController::class, 'mediaUpload'])->name('posts.mediaUpload');
