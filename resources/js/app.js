@@ -24,8 +24,19 @@ createInertiaApp({
         // Use import.meta.glob to dynamically load all Vue components in Pages directory eagerly
         const pages = import.meta.glob('./Pages/**/*.vue', { eager: true });
         let page = pages[`./Pages/${name}.vue`]; // Return the specific page component
-        page.default.layout = page.default.layout || FrameLayout
-        return page;
+        // page.default.layout = page.default.layout || FrameLayout
+        // return page;
+
+        // Check if the page was found. If not, log an error and return a default object
+        if (!page) {
+            console.error(`Page component not found for name: ${name}`);
+            return { default: {} }; // Return an object with an empty default to avoid crash
+        }
+
+        // Set the layout if not defined in the page component
+        page.default.layout = page.default.layout || FrameLayout;
+
+        return page; // Return the specific page component
     },
     setup({ el, App, props, plugin }) {
         // Create the Vue application instance with the root component and props

@@ -15,7 +15,6 @@ onBeforeMount(() => {
     messengerStore.resetMessages()
     messengerStore.loadMessages(friendData)
     friendsWithLatestMessageStore.loadInitialData(friendListWithLastMessage)
-
 })
 
 onUnmounted(() => {
