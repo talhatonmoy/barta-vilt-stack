@@ -7,9 +7,6 @@ import NProgress from 'nprogress'; // Progress bar library
 import { router } from '@inertiajs/vue3'; // Inertia router
 import { createPinia } from 'pinia';
 
-// import FrameLayout from './Layouts/FrameLayout.vue';
-
-
 const pinia = createPinia();
 
 
@@ -43,7 +40,7 @@ createInertiaApp({
         // State Manager
         app.use(pinia);
 
-        // Use ZiggyVue for route management based on Laravel routes
+        // Use ZiggyVue for route management like on Laravel routes
         app.use(ZiggyVue);
 
         // Mount the Vue application to the DOM element specified by 'el'

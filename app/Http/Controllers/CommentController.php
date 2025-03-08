@@ -32,7 +32,7 @@ class CommentController extends Controller
 
         // Notify Post Author
         $comment->load('post.user');
-        if($comment->post->user_id != auth()->id()){
+        if($comment->post->user_id != auth()->id()){s
             Notification::send($comment->post->user, new NewComment($comment));
         }
         return back();

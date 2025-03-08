@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, onUnmounted } from 'vue';
+import { onBeforeMount } from 'vue';
 import MessengerLeft from '../../Partials/Messenger/MessengerLeft.vue';
 import { usePage } from '@inertiajs/vue3';
 import { useMessengerLeftFriendWithLatestMessageStore } from '../../Store/useMessengerLeftFriendWithLatestMessageStore';
@@ -11,10 +11,6 @@ const { friendListWithLatestMessage } = usePage().props
 onBeforeMount(() => {
     friendsWithLatestMessageStore.loadInitialData(friendListWithLatestMessage)
 })
-
-// onUnmounted(() => {
-//     friendsWithLatestMessageStore.reset()
-// })
 
 </script>
 
