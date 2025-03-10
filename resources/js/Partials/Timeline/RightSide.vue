@@ -28,19 +28,29 @@ async function fetchLastFewNotifications() {
             class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark1:bg-gray-800 dark1:text-white">
             Notifications
         </div>
-        <div class="divide-y divide-gray-100 dark1:divide-gray-700" v-for="(notification, index) in latestNotifications"
-            :key="index">
-            <!-- Displaying all unread notifications -->
-            <!-- Post Like -->
-            <PostLikeNotificationItem v-if="notification.data.type === 'postLike'" :notification="notification" />
 
-            <!-- Friend Request Sent -->
-            <FriendRequestSentNotificationItem v-if="notification.data.type === 'friendRequestSent'"
-                :notification="notification" />
+        <template v-if="latestNotifications.length === 0">
+            <div class="p-4 text-sm text-center text-gray-500 dark1:text-gray-400">
+                No new notifications
+            </div>
+        </template>
 
-            <!-- New Comment -->
-            <NewCommentNotificationItem v-if="notification.data.type === 'newComment'" :notification="notification" />
-        </div>
+        <template v-else>
+            <div class="divide-y divide-gray-100 dark1:divide-gray-700"
+                v-for="(notification, index) in latestNotifications" :key="index">
+                <!-- Displaying all unread notifications -->
+                <!-- Post Like -->
+                <PostLikeNotificationItem v-if="notification.data.type === 'postLike'" :notification="notification" />
+
+                <!-- Friend Request Sent -->
+                <FriendRequestSentNotificationItem v-if="notification.data.type === 'friendRequestSent'"
+                    :notification="notification" />
+
+                <!-- New Comment -->
+                <NewCommentNotificationItem v-if="notification.data.type === 'newComment'"
+                    :notification="notification" />
+            </div>
+        </template>
         <!-- Actions -->
         <div class="flex justify-between w-full rounded-lg">
             <Link :href="route('user.notifications')"

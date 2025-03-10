@@ -30,7 +30,8 @@ class SearchController extends Controller
         $searchTerm = "%{$request->searchQuery}%";
 
         // Search users
-        $users = User::with('media')->where('first_name', 'like', $searchTerm)
+        $users = User::with(['media', 'receivedFriendRequests', 'friends', 'sentFriendRequests'])
+            ->where('first_name', 'like', $searchTerm)
             ->orWhere('user_name', 'like', $searchTerm)
             ->orWhere('last_name', 'like', $searchTerm)
             ->get();

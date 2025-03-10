@@ -36,7 +36,7 @@ function handlePostDelete() {
 
 <template>
     <article class="main-border  rounded-lg  mx-auto max-w-none px-4 py-5 sm:px-6">
-        <!-- <pre>
+        <!-- <pre class="text-xs">
             {{ props.post }}
         </pre> -->
         <!-- Barta Card Top -->

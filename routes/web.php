@@ -23,9 +23,9 @@ Route::get('/', function () {
     return redirect()->route('user.login.create');
 });
 
-Route::get('/test', function () {
-    return Inertia::render('Test');
-});
+// Route::get('/test', function () {
+//     return Inertia::render('Test');
+// });
 
 /**
  * Guest routes

@@ -19,12 +19,10 @@ Echo.private(`messenger.${authUser.id}`)
     })
 
 // Listenting for notification
-Echo.private(`App.Models.User.${authUser.id}`)
+Echo.private('App.Models.User.' + authUser.id)
     .notification((notification) => {
         console.log(notification);
     });
-
-
 </script>
 
 
