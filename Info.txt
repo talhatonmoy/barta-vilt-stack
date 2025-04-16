@@ -1,0 +1,16 @@
+-- Database
+
+DB Pass: 9t3x1ngree
+DB Name: bartaapp-35303833906b
+
+---User
+User : talha-8b99
+pass: Y}V?£ExL,N>d
+
+
+DB_CONNECTION=mysql
+DB_HOST=sdb-79.hosting.stackcp.net
+DB_PORT=3306
+DB_DATABASE=bartaapp-35303833906b
+DB_USERNAME=talha-8b99
+DB_PASSWORD="Y}V?£ExL,N>d"

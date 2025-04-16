@@ -25,7 +25,7 @@ class MessageController extends Controller
     // For Messenger UI
     public function messenger(){
         $friendList = $this->messageService->friendListWithLastConversationMessage();
-
+        
         return Inertia::render('Messenger/Messenger', [
             'friendListWithLatestMessage' => FriendResourceForMessengerSidebar::collection($friendList)
         ]);
