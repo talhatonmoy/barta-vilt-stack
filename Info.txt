@@ -14,3 +14,6 @@ DB_PORT=3306
 DB_DATABASE=bartaapp-35303833906b
 DB_USERNAME=talha-8b99
 DB_PASSWORD="Y}V?£ExL,N>d"
+
+Composer Commands
+ssh talhatonmoy.com@ssh.gb.stackcp.com "cd /home/sites/39a/4/4fe2bb1838/public_html/laravel/barta && /usr/php84/usr/bin/php /usr/local/bin/composer update --no-dev"          ─╯
